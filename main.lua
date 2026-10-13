@@ -3,15 +3,28 @@ local localPlayer = Players.LocalPlayer
 local PlayerGui = localPlayer:FindFirstChildOfClass("PlayerGui") or CoreGui
 
 if PlayerGui:FindFirstChild("VzNamHubV4UI") then PlayerGui.VzNamHubV4UI:Destroy() end
+if CoreGui:FindFirstChild("VzNamBlackScreen") then CoreGui.VzNamBlackScreen:Destroy() end
 
 local LastSelectedScriptBtn, LastSelectedScriptStroke = nil, nil
 local RegisteredScripts = {}
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "VzNamHubV4UI"
-ScreenGui.DisplayOrder = 99999 -- Ép UI luôn nằm trên cùng mọi thứ trong game
+ScreenGui.DisplayOrder = 99999
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
+
+-- Màn hình đen giảm FPS (Màu đen tuyền chuẩn xác, nằm lớp dưới UI Script nên không che menu)
+local BlackScreenGui = Instance.new("ScreenGui", CoreGui)
+BlackScreenGui.Name = "VzNamBlackScreen"
+BlackScreenGui.DisplayOrder = 0
+BlackScreenGui.IgnoreGuiInset = true
+BlackScreenGui.ResetOnSpawn = false
+BlackScreenGui.Enabled = false
+
+local BlackFrame = Instance.new("Frame", BlackScreenGui)
+BlackFrame.Size = UDim2.new(1, 0, 1, 0)
+BlackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 
 local success, avatarThumbnail = pcall(function() return Players:GetUserThumbnailAsync(localPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420) end)
 local avatarUrl = success and avatarThumbnail or "rbxassetid://15298567397"
@@ -42,6 +55,7 @@ CloseBtn.Size, CloseBtn.Position, CloseBtn.BackgroundTransparency, CloseBtn.Text
 CloseBtn.MouseButton1Click:Connect(function()
     if SoundService:FindFirstChild("VzNamHubSound") then SoundService.VzNamHubSound:Destroy() end
     ScreenGui:Destroy()
+    BlackScreenGui:Destroy()
 end)
 
 local SidebarPanel = Instance.new("Frame", MainFrame)
@@ -272,27 +286,32 @@ loadConfigBtn.LayoutOrder = 5
 loadConfigBtn.Size, loadConfigBtn.BackgroundColor3, loadConfigBtn.Text, loadConfigBtn.TextColor3, loadConfigBtn.TextSize, loadConfigBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(50, 150, 255), "📥 Tải Cấu Hình Đã Chọn 📂", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", loadConfigBtn).CornerRadius = UDim.new(0, 5)
 
--- NÚT BẬT/TẮT AUTO LOAD CẤU HÌNH KHI VÀO GAME
+-- NÚT XÓA CẤU HÌNH ĐÃ CHỌN
+local deleteConfigBtn = Instance.new("TextButton", t6Scroll)
+deleteConfigBtn.LayoutOrder = 6
+deleteConfigBtn.Size, deleteConfigBtn.BackgroundColor3, deleteConfigBtn.Text, deleteConfigBtn.TextColor3, deleteConfigBtn.TextSize, deleteConfigBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(200, 50, 50), "🗑️ Xóa Cấu Hình Đã Chọn ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
+Instance.new("UICorner", deleteConfigBtn).CornerRadius = UDim.new(0, 5)
+
 local isAutoLoadConfig = false
 local toggleAutoConfig = Instance.new("TextButton", t6Scroll)
-toggleAutoConfig.LayoutOrder = 6
+toggleAutoConfig.LayoutOrder = 7
 toggleAutoConfig.Size, toggleAutoConfig.BackgroundColor3, toggleAutoConfig.Text, toggleAutoConfig.TextColor3, toggleAutoConfig.TextSize, toggleAutoConfig.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(200, 50, 50), "Auto Load Cấu Hình Khi Vào Game: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleAutoConfig).CornerRadius = UDim.new(0, 5)
 
 local selScript, isAuto = nil, false
 local dropBtn = Instance.new("TextButton", t6Scroll)
-dropBtn.LayoutOrder = 7
+dropBtn.LayoutOrder = 8
 dropBtn.Size, dropBtn.BackgroundColor3, dropBtn.Text, dropBtn.TextColor3, dropBtn.TextSize, dropBtn.Font, dropBtn.TextXAlignment = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34), " 📜 Chọn Script Auto Load...", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 Instance.new("UICorner", dropBtn).CornerRadius = UDim.new(0, 5)
 
 local dropFrame = Instance.new("ScrollingFrame", t6Scroll)
-dropFrame.LayoutOrder = 8
+dropFrame.LayoutOrder = 9
 dropFrame.Size, dropFrame.BackgroundColor3, dropFrame.CanvasSize, dropFrame.ScrollBarThickness, dropFrame.Visible, dropFrame.ClipsDescendants = UDim2.new(1, -4, 0, 80), Color3.fromRGB(28, 32, 42), UDim2.new(0,0,0,0), 3, false, true
 Instance.new("UICorner", dropFrame).CornerRadius = UDim.new(0, 5)
 Instance.new("UIListLayout", dropFrame).Padding = UDim.new(0, 4)
 
 local toggleAuto = Instance.new("TextButton", t6Scroll)
-toggleAuto.LayoutOrder = 9
+toggleAuto.LayoutOrder = 10
 toggleAuto.Size, toggleAuto.BackgroundColor3, toggleAuto.Text, toggleAuto.TextColor3, toggleAuto.TextSize, toggleAuto.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(200, 50, 50), "Auto Load Script Chạy: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleAuto).CornerRadius = UDim.new(0, 5)
 local HubSound = SoundService:FindFirstChild("VzNamHubSound") or Instance.new("Sound", SoundService)
@@ -300,17 +319,17 @@ HubSound.Name, HubSound.Looped, HubSound.Volume = "VzNamHubSound", true, 0.5
 local currentSoundId = "1837879082"
 
 local customIdBox = Instance.new("TextBox", t6Scroll)
-customIdBox.LayoutOrder = 10
+customIdBox.LayoutOrder = 11
 customIdBox.Size, customIdBox.BackgroundColor3, customIdBox.PlaceholderText, customIdBox.Text, customIdBox.TextColor3, customIdBox.TextSize, customIdBox.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34), "🎶 Nhập Sound ID tùy chỉnh...", "", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", customIdBox).CornerRadius = UDim.new(0, 5)
 
 local musicDropBtn = Instance.new("TextButton", t6Scroll)
-musicDropBtn.LayoutOrder = 11
+musicDropBtn.LayoutOrder = 12
 musicDropBtn.Size, musicDropBtn.BackgroundColor3, musicDropBtn.Text, musicDropBtn.TextColor3, musicDropBtn.TextSize, musicDropBtn.Font, musicDropBtn.TextXAlignment = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34), " 🎵 Chọn Nhạc Nền...", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 Instance.new("UICorner", musicDropBtn).CornerRadius = UDim.new(0, 5)
 
 local musicDropFrame = Instance.new("ScrollingFrame", t6Scroll)
-musicDropFrame.LayoutOrder = 12
+musicDropFrame.LayoutOrder = 13
 musicDropFrame.Size, musicDropFrame.BackgroundColor3, musicDropFrame.CanvasSize, musicDropFrame.ScrollBarThickness, musicDropFrame.Visible, musicDropFrame.ClipsDescendants = UDim2.new(1, -4, 0, 90), Color3.fromRGB(28, 32, 42), UDim2.new(0,0,0,0), 3, false, true
 Instance.new("UICorner", musicDropFrame).CornerRadius = UDim.new(0, 5)
 Instance.new("UIListLayout", musicDropFrame).Padding = UDim.new(0, 4)
@@ -346,7 +365,7 @@ end)
 
 local isMusicPlaying = false
 local toggleMusicBtn = Instance.new("TextButton", t6Scroll)
-toggleMusicBtn.LayoutOrder = 13
+toggleMusicBtn.LayoutOrder = 14
 toggleMusicBtn.Size, toggleMusicBtn.BackgroundColor3, toggleMusicBtn.Text, toggleMusicBtn.TextColor3, toggleMusicBtn.TextSize, toggleMusicBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(200, 50, 50), "Phát Nhạc Background: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleMusicBtn).CornerRadius = UDim.new(0, 5)
 toggleMusicBtn.MouseButton1Click:Connect(function()
@@ -365,7 +384,7 @@ end)
 
 -- 🔊 THANH KÉO ÂM LƯỢNG
 local volumeFrame = Instance.new("Frame", t6Scroll)
-volumeFrame.LayoutOrder = 14
+volumeFrame.LayoutOrder = 15
 volumeFrame.Size, volumeFrame.BackgroundColor3 = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34)
 Instance.new("UICorner", volumeFrame).CornerRadius = UDim.new(0, 5)
 
@@ -417,12 +436,12 @@ local selectedColorObj = colorList[1]
 local isColorApplied = true
 
 local colorDropBtn = Instance.new("TextButton", t6Scroll)
-colorDropBtn.LayoutOrder = 15
+colorDropBtn.LayoutOrder = 16
 colorDropBtn.Size, colorDropBtn.BackgroundColor3, colorDropBtn.Text, colorDropBtn.TextColor3, colorDropBtn.TextSize, colorDropBtn.Font, colorDropBtn.TextXAlignment = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34), " 🎨 Đã chọn: 🌸 Hồng Kẹo Đắng", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 Instance.new("UICorner", colorDropBtn).CornerRadius = UDim.new(0, 5)
 
 local colorDropFrame = Instance.new("ScrollingFrame", t6Scroll)
-colorDropFrame.LayoutOrder = 16
+colorDropFrame.LayoutOrder = 17
 colorDropFrame.Size, colorDropFrame.BackgroundColor3, colorDropFrame.CanvasSize, colorDropFrame.ScrollBarThickness, colorDropFrame.Visible, colorDropFrame.ClipsDescendants = UDim2.new(1, -4, 0, 100), Color3.fromRGB(28, 32, 42), UDim2.new(0,0,0,0), 3, false, true
 Instance.new("UICorner", colorDropFrame).CornerRadius = UDim.new(0, 5)
 Instance.new("UIListLayout", colorDropFrame).Padding = UDim.new(0, 4)
@@ -448,7 +467,7 @@ colorDropBtn.MouseButton1Click:Connect(function()
 end)
 
 local toggleColorBtn = Instance.new("TextButton", t6Scroll)
-toggleColorBtn.LayoutOrder = 17
+toggleColorBtn.LayoutOrder = 18
 toggleColorBtn.Size, toggleColorBtn.BackgroundColor3, toggleColorBtn.Text, toggleColorBtn.TextColor3, toggleColorBtn.TextSize, toggleColorBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(50, 200, 50), "Màu Menu Tùy Chỉnh: BẬT ✅", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleColorBtn).CornerRadius = UDim.new(0, 5)
 
@@ -478,10 +497,10 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 🖥️ MÀN HÌNH ĐEN GIẢM FPS AN TOÀN TUYỆT ĐỐI (DÙNG HIỆU ỨNG TỐI ÁNH SÁNG HOẶC ĐÓNG RENDER PHỤ)
+-- 🖥️ MÀN HÌNH ĐEN TUYỀN GIẢM FPS (ĐÃ FIX ĐÚNG MÀU ĐEN, KHÔNG BAO GIỜ CHE SCRIPT)
 local isFpsModeOn = false
 local toggleFpsBtn = Instance.new("TextButton", t6Scroll)
-toggleFpsBtn.LayoutOrder = 18
+toggleFpsBtn.LayoutOrder = 19
 toggleFpsBtn.Size, toggleFpsBtn.BackgroundColor3, toggleFpsBtn.Text, toggleFpsBtn.TextColor3, toggleFpsBtn.TextSize, toggleFpsBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(200, 50, 50), "Màn Hình Đen Giảm FPS: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleFpsBtn).CornerRadius = UDim.new(0, 5)
 
@@ -490,20 +509,15 @@ toggleFpsBtn.MouseButton1Click:Connect(function()
     if isFpsModeOn then
         toggleFpsBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
         toggleFpsBtn.Text = "Màn Hình Đen Giảm FPS: BẬT ✅"
-        pcall(function()
-            settings():GetService("RenderSettings").EagerBulkExecution = false
-            RunService:Set3dRenderingEnabled(false) -- Tắt render 3D game giúp cực kỳ mượt mà, nhưng Menu Script vẫn hiển thị sáng rõ để bạn dùng
-        end)
+        BlackScreenGui.Enabled = true
     else
         toggleFpsBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
         toggleFpsBtn.Text = "Màn Hình Đen Giảm FPS: TẮT ❌"
-        pcall(function()
-            RunService:Set3dRenderingEnabled(true) -- Bật lại render bình thường
-        end)
+        BlackScreenGui.Enabled = false
     end
 end)
 
-t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 650)
+t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 680)
 
 -- 📐 RESIZE GÓC PHẢI DƯỚI
 local ResizeBtn = Instance.new("TextButton", MainFrame)
@@ -541,7 +555,7 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- LOGIC CẤU HÌNH & AUTO LOAD CONFIG
+-- LOGIC CẤU HÌNH, XÓA CẤU HÌNH & AUTO LOAD
 local function refreshConfigList()
     for _, c in ipairs(configDropFrame:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
     if typeof(listfiles) ~= "function" then return end
@@ -560,7 +574,6 @@ local function refreshConfigList()
                 selectedConfigName = fName 
                 configDropBtn.Text = " 📂 " .. fName 
                 configDropFrame.Visible = false 
-                -- Lưu cấu hình vừa chọn làm mặc định auto load
                 if typeof(writefile) == "function" then
                     pcall(writefile, configFolder .. "/autodefault.txt", fName)
                 end
@@ -638,6 +651,22 @@ loadConfigBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+-- NÚT XÓA CẤU HÌNH
+deleteConfigBtn.MouseButton1Click:Connect(function()
+    if selectedConfigName ~= "" and typeof(delfile) == "function" then
+        local targetFile = configFolder .. "/" .. selectedConfigName .. ".json"
+        if isfile(targetFile) then
+            pcall(delfile, targetFile)
+            deleteConfigBtn.Text = "🗑️ Đã Xóa Thành Công! ✅"
+            selectedConfigName = ""
+            configDropBtn.Text = " 📂 Chọn Cấu Hình Đã Lưu..."
+            task.wait(1.5)
+            deleteConfigBtn.Text = "🗑️ Xóa Cấu Hình Đã Chọn ❌"
+            refreshConfigList()
+        end
+    end
+end)
+
 local dh = 0
 for i, scr in ipairs(RegisteredScripts) do
     local item = Instance.new("TextButton", dropFrame)
@@ -678,7 +707,7 @@ end)
 
 refreshConfigList()
 
--- TỰ ĐỘNG NẠP CẤU HÌNH MẶC ĐỊNH KHI KHỞI ĐỘNG (NẾU CÓ)
+-- TỰ ĐỘNG NẠP CẤU HÌNH MẶC ĐỊNH KHI VÀO GAME
 pcall(function()
     if typeof(readfile) == "function" and isfile(configFolder .. "/autodefault.txt") then
         local defName = readfile(configFolder .. "/autodefault.txt")
