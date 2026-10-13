@@ -468,7 +468,7 @@ RunService.RenderStepped:Connect(function()
 end)
 miscScroll.CanvasSize = UDim2.new(0, 0, 0, 1400)
 -- ============================================================================
--- TAB 7: CẤU HÌNH & PROFILES (Phần 5a - Đã sửa lỗi thu gọn độc lập)
+-- TAB 7: CẤU HÌNH & PROFILES (Hoàn chỉnh, Profiles độc lập với Cấu Hình)
 -- ============================================================================
 local tabConfigBtn = Instance.new("TextButton", SidebarScroll)
 tabConfigBtn.Size, tabConfigBtn.BackgroundColor3, tabConfigBtn.BackgroundTransparency, tabConfigBtn.Text, tabConfigBtn.TextColor3, tabConfigBtn.TextSize, tabConfigBtn.Font, tabConfigBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   📦 CẤU HÌNH", Color3.fromRGB(255, 255, 255), 11, Enum.Font.GothamBold, Enum.TextXAlignment.Left
@@ -496,7 +496,7 @@ if typeof(makefolder) == "function" then pcall(makefolder, configFolder) end
 local currentConfigName = "Default"
 local startupConfigName = "Default"
 
--- 1. Nút thu gọn mục Cấu Hình chính (Chỉ điều khiển các tính năng bên trong nó)
+-- Nút thu gọn Cấu Hình chính (Chỉ ẩn hiện các tính năng bên trong nó, không ảnh hưởng Profiles)
 local configToggleBtn = Instance.new("TextButton", configScroll)
 configToggleBtn.LayoutOrder = 1
 configToggleBtn.Size, configToggleBtn.BackgroundColor3, configToggleBtn.Text, configToggleBtn.TextColor3, configToggleBtn.TextSize, configToggleBtn.Font, configToggleBtn.TextXAlignment = UDim2.new(1, -4, 0, 42), Color3.fromRGB(20, 22, 30), "  ↓ Cấu Hình", Color3.fromRGB(255, 255, 255), 13, Enum.Font.GothamBold, Enum.TextXAlignment.Center
@@ -569,7 +569,7 @@ autoLoadToggle.MouseButton1Click:Connect(function()
     alBox.Position = isAutoLoad and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
 end)
 
--- 2. Nút Profiles (Đặt độc lập ngay dưới Cấu Hình, không bị ảnh hưởng khi thu gọn Cấu Hình)
+-- Nút Profiles (Đặt độc lập ngay bên trong configScroll, không bị ảnh hưởng bởi nút Cấu Hình phía trên)
 local profilesToggleBtn = Instance.new("TextButton", configScroll)
 profilesToggleBtn.LayoutOrder = 3
 profilesToggleBtn.Size, profilesToggleBtn.BackgroundColor3, profilesToggleBtn.Text, profilesToggleBtn.TextColor3, profilesToggleBtn.TextSize, profilesToggleBtn.Font, profilesToggleBtn.TextXAlignment = UDim2.new(1, -4, 0, 42), Color3.fromRGB(20, 22, 30), "  ↓ Profiles", Color3.fromRGB(255, 255, 255), 13, Enum.Font.GothamBold, Enum.TextXAlignment.Center
@@ -590,9 +590,7 @@ profilesToggleBtn.MouseButton1Click:Connect(function()
     profilesToggleBtn.Text = profilesContainer.Visible and "  ↓ Profiles" or "  → Profiles"
     profilesSubLabel.Visible = profilesContainer.Visible
 end)
--- ============================================================================
--- TAB 7: CẤU HÌNH & PROFILES (Phần 5b - Tiếp theo)
--- ============================================================================
+
 -- New Cấu Hình Name
 local newConfigFrame = Instance.new("Frame", profilesContainer)
 newConfigFrame.LayoutOrder = 1 newConfigFrame.Size, newConfigFrame.BackgroundColor3 = UDim2.new(1, 0, 0, 38), Color3.fromRGB(22, 25, 34)
@@ -678,7 +676,6 @@ local saveBtn = Instance.new("TextButton", saveFrame)
 saveBtn.Size, saveBtn.Position, saveBtn.BackgroundColor3, saveBtn.Text, saveBtn.TextColor3, saveBtn.TextSize, saveBtn.Font = UDim2.new(0, 95, 0, 26), UDim2.new(1, -103, 0.5, -13), Color3.fromRGB(220, 50, 50), "Save", Color3.fromRGB(255, 255, 255), 10, Enum.Font.GothamBold
 Instance.new("UICorner", saveBtn).CornerRadius = UDim.new(0, 4)
 
--- Hàm làm mới danh sách cấu hình
 -- Hàm làm mới danh sách cấu hình
 local function refreshAllDropdowns()
     for _, drop in ipairs({delDropFrame, stProfileDrop, ldDropFrame}) do
