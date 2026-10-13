@@ -62,6 +62,7 @@ SidebarPanel.Size, SidebarPanel.Position, SidebarPanel.BackgroundColor3, Sidebar
 Instance.new("UICorner", SidebarPanel).CornerRadius = UDim.new(0, 6)
 local SidebarStroke = Instance.new("UIStroke", SidebarPanel) SidebarStroke.Color, SidebarStroke.Thickness = Color3.fromRGB(40, 43, 52), 1
 
+-- 🔍 1. TÌM KIẾM CỘT TAB SIDEBAR TRÁI
 local SearchBoxTab = Instance.new("TextBox", SidebarPanel)
 SearchBoxTab.Size, SearchBoxTab.Position, SearchBoxTab.BackgroundColor3, SearchBoxTab.BackgroundTransparency, SearchBoxTab.Text, SearchBoxTab.PlaceholderText, SearchBoxTab.PlaceholderColor3, SearchBoxTab.TextColor3, SearchBoxTab.TextSize, SearchBoxTab.Font = UDim2.new(1, -10, 0, 24), UDim2.new(0, 5, 0, 5), Color3.fromRGB(22, 25, 34), 0, "", "🔍 Search section...", Color3.fromRGB(130, 135, 145), Color3.fromRGB(255, 255, 255), 10, Enum.Font.FredokaOne
 Instance.new("UICorner", SearchBoxTab).CornerRadius = UDim.new(0, 4)
@@ -90,6 +91,7 @@ local ContentHeader = Instance.new("Frame", ContentContainer) ContentHeader.Size
 local ActiveTabTitle = Instance.new("TextLabel", ContentHeader)
 ActiveTabTitle.Size, ActiveTabTitle.Position, ActiveTabTitle.BackgroundTransparency, ActiveTabTitle.Text, ActiveTabTitle.TextColor3, ActiveTabTitle.TextSize, ActiveTabTitle.Font, ActiveTabTitle.TextXAlignment = UDim2.new(1, -40, 1, 0), UDim2.new(0, 12, 0, 0), 1, "", Color3.fromRGB(255, 255, 255), 12, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 
+-- 🔍 2. Ô TÌM KIẾM CHỨC NĂNG BÊN GÓC PHẢI
 local SearchInputContent = Instance.new("TextBox", ContentHeader)
 SearchInputContent.Size, SearchInputContent.Position, SearchInputContent.BackgroundColor3, SearchInputContent.TextColor3, SearchInputContent.PlaceholderText, SearchInputContent.PlaceholderColor3, SearchInputContent.TextSize, SearchInputContent.Font, SearchInputContent.Visible = UDim2.new(1, -45, 0, 22), UDim2.new(0, 10, 0.5, -11), Color3.fromRGB(22, 25, 34), Color3.fromRGB(255, 255, 255), "Search features...", Color3.fromRGB(140, 140, 150), 10, Enum.Font.FredokaOne, false
 Instance.new("UICorner", SearchInputContent).CornerRadius = UDim.new(0, 4)
@@ -368,7 +370,7 @@ toggleMusicBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🎨 KHÔI PHỤC PHẦN CHỌN MÀU MENU (ĐẶT NGAY SAU NHẠC)
+-- 🎨 PHẦN CHỌN MÀU MENU (ĐẦY ĐỦ DANH SÁCH RENDER CHUẨN XÁC)
 local colorList = {
     {Name = "🌸 Hồng Kẹo Đắng", Color = Color3.fromRGB(255, 105, 180)},
     {Name = "🌈 Màu Cầu Vồng", Color = nil},
@@ -474,7 +476,7 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- LOGIC LOAD CONFIG VÀ XỬ LÝ SỰ KIỆN KHÁC
+-- LOGIC LOAD CONFIG VÀ XỬ LÝ SỰ KIỆN ĐÓNG/MỞ DROPDOWN
 local function refreshConfigList()
     for _, c in ipairs(configDropFrame:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
     if typeof(listfiles) ~= "function" then return end
