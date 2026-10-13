@@ -62,7 +62,6 @@ SidebarPanel.Size, SidebarPanel.Position, SidebarPanel.BackgroundColor3, Sidebar
 Instance.new("UICorner", SidebarPanel).CornerRadius = UDim.new(0, 6)
 local SidebarStroke = Instance.new("UIStroke", SidebarPanel) SidebarStroke.Color, SidebarStroke.Thickness = Color3.fromRGB(40, 43, 52), 1
 
--- 🔍 1. TÌM KIẾM CỘT TAB SIDEBAR TRÁI
 local SearchBoxTab = Instance.new("TextBox", SidebarPanel)
 SearchBoxTab.Size, SearchBoxTab.Position, SearchBoxTab.BackgroundColor3, SearchBoxTab.BackgroundTransparency, SearchBoxTab.Text, SearchBoxTab.PlaceholderText, SearchBoxTab.PlaceholderColor3, SearchBoxTab.TextColor3, SearchBoxTab.TextSize, SearchBoxTab.Font = UDim2.new(1, -10, 0, 24), UDim2.new(0, 5, 0, 5), Color3.fromRGB(22, 25, 34), 0, "", "🔍 Search section...", Color3.fromRGB(130, 135, 145), Color3.fromRGB(255, 255, 255), 10, Enum.Font.FredokaOne
 Instance.new("UICorner", SearchBoxTab).CornerRadius = UDim.new(0, 4)
@@ -75,11 +74,7 @@ SearchBoxTab:GetPropertyChangedSignal("Text"):Connect(function()
     local query = string.lower(SearchBoxTab.Text)
     for _, item in ipairs(SidebarScroll:GetChildren()) do
         if item:IsA("TextButton") then
-            if query == "" or string.find(string.lower(item.Text), query) then
-                item.Visible = true
-            else
-                item.Visible = false
-            end
+            if query == "" or string.find(string.lower(item.Text), query) then item.Visible = true else item.Visible = false end
         end
     end
 end)
@@ -95,7 +90,6 @@ local ContentHeader = Instance.new("Frame", ContentContainer) ContentHeader.Size
 local ActiveTabTitle = Instance.new("TextLabel", ContentHeader)
 ActiveTabTitle.Size, ActiveTabTitle.Position, ActiveTabTitle.BackgroundTransparency, ActiveTabTitle.Text, ActiveTabTitle.TextColor3, ActiveTabTitle.TextSize, ActiveTabTitle.Font, ActiveTabTitle.TextXAlignment = UDim2.new(1, -40, 1, 0), UDim2.new(0, 12, 0, 0), 1, "", Color3.fromRGB(255, 255, 255), 12, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 
--- 🔍 2. Ô TÌM KIẾM CHỨC NĂNG BÊN GÓC PHẢI HEADER
 local SearchInputContent = Instance.new("TextBox", ContentHeader)
 SearchInputContent.Size, SearchInputContent.Position, SearchInputContent.BackgroundColor3, SearchInputContent.TextColor3, SearchInputContent.PlaceholderText, SearchInputContent.PlaceholderColor3, SearchInputContent.TextSize, SearchInputContent.Font, SearchInputContent.Visible = UDim2.new(1, -45, 0, 22), UDim2.new(0, 10, 0.5, -11), Color3.fromRGB(22, 25, 34), Color3.fromRGB(255, 255, 255), "Search features...", Color3.fromRGB(140, 140, 150), 10, Enum.Font.FredokaOne, false
 Instance.new("UICorner", SearchInputContent).CornerRadius = UDim.new(0, 4)
@@ -260,23 +254,19 @@ tab6Btn.MouseButton1Click:Connect(function()
 end)
 table.insert(Tabs, {Container = t6Scroll, Indicator = t6Indicator})
 
--- CÁC CHỨC NĂNG TRONG TAB KHÁC THEO ĐÚNG THỨ TỰ SẮP XẾP
 local configFolder = "VzNamHub_Configs"
 if typeof(makefolder) == "function" then pcall(makefolder, configFolder) end
 
--- 1. Ô Nhập Tên Config
 local configNameBox = Instance.new("TextBox", t6Scroll)
 configNameBox.LayoutOrder = 1
 configNameBox.Size, configNameBox.BackgroundColor3, configNameBox.PlaceholderText, configNameBox.Text, configNameBox.TextColor3, configNameBox.TextSize, configNameBox.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(22, 25, 34), "📝 Nhập tên cấu hình...", "", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", configNameBox).CornerRadius = UDim.new(0, 5)
 
--- 2. Nút Lưu Config
 local saveConfigBtn = Instance.new("TextButton", t6Scroll)
 saveConfigBtn.LayoutOrder = 2
 saveConfigBtn.Size, saveConfigBtn.BackgroundColor3, saveConfigBtn.Text, saveConfigBtn.TextColor3, saveConfigBtn.TextSize, saveConfigBtn.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(50, 200, 50), "💾 Lưu Cấu Hình Này ✅", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", saveConfigBtn).CornerRadius = UDim.new(0, 5)
 
--- 3. Nút Chọn Config Đã Lưu & Khung Dropdown
 local selectedConfigName = ""
 local configDropBtn = Instance.new("TextButton", t6Scroll)
 configDropBtn.LayoutOrder = 3
@@ -289,13 +279,11 @@ configDropFrame.Size, configDropFrame.BackgroundColor3, configDropFrame.CanvasSi
 Instance.new("UICorner", configDropFrame).CornerRadius = UDim.new(0, 5)
 Instance.new("UIListLayout", configDropFrame).Padding = UDim.new(0, 4)
 
--- 4. Nút Tải Config
 local loadConfigBtn = Instance.new("TextButton", t6Scroll)
 loadConfigBtn.LayoutOrder = 5
 loadConfigBtn.Size, loadConfigBtn.BackgroundColor3, loadConfigBtn.Text, loadConfigBtn.TextColor3, loadConfigBtn.TextSize, loadConfigBtn.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(50, 150, 255), "📥 Tải Cấu Hình Đã Chọn 📂", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", loadConfigBtn).CornerRadius = UDim.new(0, 5)
 
--- 5. Auto Load Script Dropdown
 local selScript, isAuto = nil, false
 local dropBtn = Instance.new("TextButton", t6Scroll)
 dropBtn.LayoutOrder = 6
@@ -316,13 +304,11 @@ local HubSound = SoundService:FindFirstChild("VzNamHubSound") or Instance.new("S
 HubSound.Name, HubSound.Looped, HubSound.Volume = "VzNamHubSound", true, 0.5
 local currentSoundId = "1837879082"
 
--- 🎼 6. Ô NHẬP SOUND ID TỦY CHỈNH (KHÔI PHỤC ĐẦY ĐỦ)
 local customIdBox = Instance.new("TextBox", t6Scroll)
 customIdBox.LayoutOrder = 9
 customIdBox.Size, customIdBox.BackgroundColor3, customIdBox.PlaceholderText, customIdBox.Text, customIdBox.TextColor3, customIdBox.TextSize, customIdBox.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(22, 25, 34), "🎶 Nhập Sound ID tùy chỉnh...", "", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", customIdBox).CornerRadius = UDim.new(0, 5)
 
--- 🎵 7. Nút Chọn Nhạc Nền & Dropdown
 local musicDropBtn = Instance.new("TextButton", t6Scroll)
 musicDropBtn.LayoutOrder = 10
 musicDropBtn.Size, musicDropBtn.BackgroundColor3, musicDropBtn.Text, musicDropBtn.TextColor3, musicDropBtn.TextSize, musicDropBtn.Font, musicDropBtn.TextXAlignment = UDim2.new(1, -4, 0, 30), Color3.fromRGB(22, 25, 34), " 🎵 Chọn Nhạc Nền...", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
@@ -343,6 +329,7 @@ local presetMusics = {
 }
 for i, m in ipairs(presetMusics) do
     local mBtn = Instance.new("TextButton", musicDropFrame)
+    mBtn.LayoutOrder = i
     mBtn.Size, mBtn.BackgroundColor3, mBtn.Text, mBtn.TextColor3, mBtn.TextSize, mBtn.Font, mBtn.TextXAlignment = UDim2.new(1, 0, 0, 26), Color3.fromRGB(35, 40, 50), " " .. m.Name, Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
     Instance.new("UICorner", mBtn).CornerRadius = UDim.new(0, 4)
     mBtn.MouseButton1Click:Connect(function()
@@ -381,10 +368,61 @@ toggleMusicBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🖥️ 8. Nút Giảm FPS Màn Hình Đen
+-- 🎨 KHÔI PHỤC PHẦN CHỌN MÀU MENU (ĐẶT NGAY SAU NHẠC)
+local colorList = {
+    {Name = "🌸 Hồng Kẹo Đắng", Color = Color3.fromRGB(255, 105, 180)},
+    {Name = "🌈 Màu Cầu Vồng", Color = nil},
+    {Name = "🔴 Đỏ Đậm", Color = Color3.fromRGB(220, 20, 60)},
+    {Name = "🔵 Xanh Dương Neon", Color = Color3.fromRGB(0, 191, 255)},
+    {Name = "🟢 Xanh Lá Cây", Color = Color3.fromRGB(50, 205, 50)},
+    {Name = "🟡 Vàng Nổi Bật", Color = Color3.fromRGB(255, 215, 0)},
+    {Name = "🟣 Tím Mộng Mơ", Color = Color3.fromRGB(138, 43, 226)},
+    {Name = "⬛ Xám Tối Elegant", Color = Color3.fromRGB(50, 50, 50)}
+}
+local selectedColorObj = colorList[1]
+
+local colorDropBtn = Instance.new("TextButton", t6Scroll)
+colorDropBtn.LayoutOrder = 13
+colorDropBtn.Size, colorDropBtn.BackgroundColor3, colorDropBtn.Text, colorDropBtn.TextColor3, colorDropBtn.TextSize, colorDropBtn.Font, colorDropBtn.TextXAlignment = UDim2.new(1, -4, 0, 30), Color3.fromRGB(22, 25, 34), " 🎨 Đã chọn: 🌸 Hồng Kẹo Đắng", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
+Instance.new("UICorner", colorDropBtn).CornerRadius = UDim.new(0, 5)
+
+local colorDropFrame = Instance.new("ScrollingFrame", t6Scroll)
+colorDropFrame.LayoutOrder = 14
+colorDropFrame.Size, colorDropFrame.BackgroundColor3, colorDropFrame.CanvasSize, colorDropFrame.ScrollBarThickness, colorDropFrame.Visible, colorDropFrame.ClipsDescendants = UDim2.new(1, -4, 0, 100), Color3.fromRGB(28, 32, 42), UDim2.new(0,0,0,0), 3, false, true
+Instance.new("UICorner", colorDropFrame).CornerRadius = UDim.new(0, 5)
+Instance.new("UIListLayout", colorDropFrame).Padding = UDim.new(0, 4)
+
+for i, cItem in ipairs(colorList) do
+    local cBtn = Instance.new("TextButton", colorDropFrame)
+    cBtn.LayoutOrder = i
+    cBtn.Size, cBtn.BackgroundColor3, cBtn.Text, cBtn.TextColor3, cBtn.TextSize, cBtn.Font, cBtn.TextXAlignment = UDim2.new(1, 0, 0, 26), Color3.fromRGB(35, 40, 50), " " .. cItem.Name, Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
+    Instance.new("UICorner", cBtn).CornerRadius = UDim.new(0, 4)
+    cBtn.MouseButton1Click:Connect(function()
+        selectedColorObj = cItem
+        colorDropBtn.Text = " 🎨 Đã chọn: " .. cItem.Name
+        colorDropFrame.Visible = false
+        if selectedColorObj.Color then
+            SidebarPanel.BackgroundColor3 = selectedColorObj.Color
+            ContentContainer.BackgroundColor3 = selectedColorObj.Color
+        else
+            SidebarPanel.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+            ContentContainer.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+        end
+    end)
+end
+colorDropFrame.CanvasSize = UDim2.new(0, 0, 0, #colorList * 30)
+
+colorDropBtn.MouseButton1Click:Connect(function()
+    colorDropFrame.Visible = not colorDropFrame.Visible
+    configDropFrame.Visible = false
+    dropFrame.Visible = false
+    musicDropFrame.Visible = false
+end)
+
+-- 🖥️ Màn Hình Đen Giảm FPS
 local isFpsModeOn = false
 local toggleFpsBtn = Instance.new("TextButton", t6Scroll)
-toggleFpsBtn.LayoutOrder = 13
+toggleFpsBtn.LayoutOrder = 15
 toggleFpsBtn.Size, toggleFpsBtn.BackgroundColor3, toggleFpsBtn.Text, toggleFpsBtn.TextColor3, toggleFpsBtn.TextSize, toggleFpsBtn.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(200, 50, 50), "Màn Hình Đen Giảm FPS: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleFpsBtn).CornerRadius = UDim.new(0, 5)
 toggleFpsBtn.MouseButton1Click:Connect(function()
@@ -436,7 +474,7 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- LOGIC LOAD CONFIG VÀ XỬ LÝ SỰ KIỆN
+-- LOGIC LOAD CONFIG VÀ XỬ LÝ SỰ KIỆN KHÁC
 local function refreshConfigList()
     for _, c in ipairs(configDropFrame:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
     if typeof(listfiles) ~= "function" then return end
@@ -455,7 +493,9 @@ local function refreshConfigList()
     end
 end
 
-configDropBtn.MouseButton1Click:Connect(function() refreshConfigList() configDropFrame.Visible = not configDropFrame.Visible dropFrame.Visible = false musicDropFrame.Visible = false end)
+configDropBtn.MouseButton1Click:Connect(function() refreshConfigList() configDropFrame.Visible = not configDropFrame.Visible dropFrame.Visible = false musicDropFrame.Visible = false colorDropFrame.Visible = false end)
+dropBtn.MouseButton1Click:Connect(function() dropFrame.Visible = not dropFrame.Visible configDropFrame.Visible = false musicDropFrame.Visible = false colorDropFrame.Visible = false end)
+musicDropBtn.MouseButton1Click:Connect(function() musicDropFrame.Visible = not musicDropFrame.Visible configDropFrame.Visible = false dropFrame.Visible = false colorDropFrame.Visible = false end)
 
 saveConfigBtn.MouseButton1Click:Connect(function()
     local cName = configNameBox.Text
@@ -470,7 +510,7 @@ end)
 
 loadConfigBtn.MouseButton1Click:Connect(function()
     if selectedConfigName ~= "" and typeof(readfile) == "function" and isfile(configFolder .. "/" .. selectedConfigName .. ".json") then
-        local success, data = pcall(function() return HttpService:JSONEncode(readfile(configFolder .. "/" .. selectedConfigName .. ".json")) end)
+        local success, data = pcall(function() return HttpService:JSONDecode(readfile(configFolder .. "/" .. selectedConfigName .. ".json")) end)
         if success and data then
             currentSoundId = data.SoundId or currentSoundId
             if HubSound.IsPlaying then HubSound.SoundId = "rbxassetid://" .. currentSoundId HubSound:Play() end
@@ -480,9 +520,6 @@ loadConfigBtn.MouseButton1Click:Connect(function()
         end
     end
 end)
-
-dropBtn.MouseButton1Click:Connect(function() dropFrame.Visible = not dropFrame.Visible configDropFrame.Visible = false musicDropFrame.Visible = false end)
-musicDropBtn.MouseButton1Click:Connect(function() musicDropFrame.Visible = not musicDropFrame.Visible configDropFrame.Visible = false dropFrame.Visible = false end)
 
 local dh = 0
 for _, scr in ipairs(RegisteredScripts) do
