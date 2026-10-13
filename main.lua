@@ -62,7 +62,6 @@ SidebarPanel.Size, SidebarPanel.Position, SidebarPanel.BackgroundColor3, Sidebar
 Instance.new("UICorner", SidebarPanel).CornerRadius = UDim.new(0, 6)
 local SidebarStroke = Instance.new("UIStroke", SidebarPanel) SidebarStroke.Color, SidebarStroke.Thickness = Color3.fromRGB(40, 43, 52), 1
 
--- 🔍 1. TÌM KIẾM CỘT TAB SIDEBAR TRÁI
 local SearchBoxTab = Instance.new("TextBox", SidebarPanel)
 SearchBoxTab.Size, SearchBoxTab.Position, SearchBoxTab.BackgroundColor3, SearchBoxTab.BackgroundTransparency, SearchBoxTab.Text, SearchBoxTab.PlaceholderText, SearchBoxTab.PlaceholderColor3, SearchBoxTab.TextColor3, SearchBoxTab.TextSize, SearchBoxTab.Font = UDim2.new(1, -10, 0, 24), UDim2.new(0, 5, 0, 5), Color3.fromRGB(22, 25, 34), 0, "", "🔍 Search section...", Color3.fromRGB(130, 135, 145), Color3.fromRGB(255, 255, 255), 10, Enum.Font.FredokaOne
 Instance.new("UICorner", SearchBoxTab).CornerRadius = UDim.new(0, 4)
@@ -91,7 +90,6 @@ local ContentHeader = Instance.new("Frame", ContentContainer) ContentHeader.Size
 local ActiveTabTitle = Instance.new("TextLabel", ContentHeader)
 ActiveTabTitle.Size, ActiveTabTitle.Position, ActiveTabTitle.BackgroundTransparency, ActiveTabTitle.Text, ActiveTabTitle.TextColor3, ActiveTabTitle.TextSize, ActiveTabTitle.Font, ActiveTabTitle.TextXAlignment = UDim2.new(1, -40, 1, 0), UDim2.new(0, 12, 0, 0), 1, "", Color3.fromRGB(255, 255, 255), 12, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 
--- 🔍 2. Ô TÌM KIẾM CHỨC NĂNG BÊN GÓC PHẢI
 local SearchInputContent = Instance.new("TextBox", ContentHeader)
 SearchInputContent.Size, SearchInputContent.Position, SearchInputContent.BackgroundColor3, SearchInputContent.TextColor3, SearchInputContent.PlaceholderText, SearchInputContent.PlaceholderColor3, SearchInputContent.TextSize, SearchInputContent.Font, SearchInputContent.Visible = UDim2.new(1, -45, 0, 22), UDim2.new(0, 10, 0.5, -11), Color3.fromRGB(22, 25, 34), Color3.fromRGB(255, 255, 255), "Search features...", Color3.fromRGB(140, 140, 150), 10, Enum.Font.FredokaOne, false
 Instance.new("UICorner", SearchInputContent).CornerRadius = UDim.new(0, 4)
@@ -370,7 +368,7 @@ toggleMusicBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🎨 PHẦN CHỌN MÀU MENU (ĐẦY ĐỦ DANH SÁCH RENDER CHUẨN XÁC)
+-- 🎨 PHẦN CHỌN MÀU MENU & NÚT BẬT/TẮT MÀU
 local colorList = {
     {Name = "🌸 Hồng Kẹo Đắng", Color = Color3.fromRGB(255, 105, 180)},
     {Name = "🌈 Màu Cầu Vồng", Color = nil},
@@ -382,6 +380,7 @@ local colorList = {
     {Name = "⬛ Xám Tối Elegant", Color = Color3.fromRGB(50, 50, 50)}
 }
 local selectedColorObj = colorList[1]
+local isColorApplied = true
 
 local colorDropBtn = Instance.new("TextButton", t6Scroll)
 colorDropBtn.LayoutOrder = 13
@@ -403,12 +402,14 @@ for i, cItem in ipairs(colorList) do
         selectedColorObj = cItem
         colorDropBtn.Text = " 🎨 Đã chọn: " .. cItem.Name
         colorDropFrame.Visible = false
-        if selectedColorObj.Color then
-            SidebarPanel.BackgroundColor3 = selectedColorObj.Color
-            ContentContainer.BackgroundColor3 = selectedColorObj.Color
-        else
-            SidebarPanel.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
-            ContentContainer.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+        if isColorApplied then
+            if selectedColorObj.Color then
+                SidebarPanel.BackgroundColor3 = selectedColorObj.Color
+                ContentContainer.BackgroundColor3 = selectedColorObj.Color
+            else
+                SidebarPanel.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+                ContentContainer.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+            end
         end
     end)
 end
@@ -421,10 +422,33 @@ colorDropBtn.MouseButton1Click:Connect(function()
     musicDropFrame.Visible = false
 end)
 
+-- 🔘 NÚT BẬT/TẮT MÀU MENU TÙY CHỈNH (ĐẶT NGAY DƯỚI)
+local toggleColorBtn = Instance.new("TextButton", t6Scroll)
+toggleColorBtn.LayoutOrder = 15
+toggleColorBtn.Size, toggleColorBtn.BackgroundColor3, toggleColorBtn.Text, toggleColorBtn.TextColor3, toggleColorBtn.TextSize, toggleColorBtn.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(50, 200, 50), "Màu Menu Tùy Chỉnh: BẬT ✅", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
+Instance.new("UICorner", toggleColorBtn).CornerRadius = UDim.new(0, 5)
+
+toggleColorBtn.MouseButton1Click:Connect(function()
+    isColorApplied = not isColorApplied
+    if isColorApplied then
+        toggleColorBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        toggleColorBtn.Text = "Màu Menu Tùy Chỉnh: BẬT ✅"
+        if selectedColorObj.Color then
+            SidebarPanel.BackgroundColor3 = selectedColorObj.Color
+            ContentContainer.BackgroundColor3 = selectedColorObj.Color
+        end
+    else
+        toggleColorBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        toggleColorBtn.Text = "Màu Menu Tùy Chỉnh: TẮT ❌"
+        SidebarPanel.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+        ContentContainer.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+    end
+end)
+
 -- 🖥️ Màn Hình Đen Giảm FPS
 local isFpsModeOn = false
 local toggleFpsBtn = Instance.new("TextButton", t6Scroll)
-toggleFpsBtn.LayoutOrder = 15
+toggleFpsBtn.LayoutOrder = 16
 toggleFpsBtn.Size, toggleFpsBtn.BackgroundColor3, toggleFpsBtn.Text, toggleFpsBtn.TextColor3, toggleFpsBtn.TextSize, toggleFpsBtn.Font = UDim2.new(1, -4, 0, 30), Color3.fromRGB(200, 50, 50), "Màn Hình Đen Giảm FPS: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleFpsBtn).CornerRadius = UDim.new(0, 5)
 toggleFpsBtn.MouseButton1Click:Connect(function()
@@ -483,9 +507,12 @@ local function refreshConfigList()
     local success, files = pcall(listfiles, configFolder)
     if success and files then
         local h = 0
+        local orderIdx = 0
         for _, file in ipairs(files) do
+            orderIdx = orderIdx + 1
             local fName = file:match("([^/]+)$"):gsub("%.json$", "")
             local cBtn = Instance.new("TextButton", configDropFrame)
+            cBtn.LayoutOrder = orderIdx
             cBtn.Size, cBtn.BackgroundColor3, cBtn.Text, cBtn.TextColor3, cBtn.TextSize, cBtn.Font, cBtn.TextXAlignment = UDim2.new(1, 0, 0, 26), Color3.fromRGB(35, 40, 50), " 📁 " .. fName, Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
             Instance.new("UICorner", cBtn).CornerRadius = UDim.new(0, 4)
             cBtn.MouseButton1Click:Connect(function() selectedConfigName = fName configDropBtn.Text = " 📂 " .. fName configDropFrame.Visible = false end)
@@ -524,8 +551,9 @@ loadConfigBtn.MouseButton1Click:Connect(function()
 end)
 
 local dh = 0
-for _, scr in ipairs(RegisteredScripts) do
+for i, scr in ipairs(RegisteredScripts) do
     local item = Instance.new("TextButton", dropFrame)
+    item.LayoutOrder = i
     item.Size, item.BackgroundColor3, item.Text, item.TextColor3, item.TextSize, item.Font, item.TextXAlignment = UDim2.new(1, 0, 0, 26), Color3.fromRGB(35, 40, 50), "  ▶ " .. scr.Name, Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
     Instance.new("UICorner", item).CornerRadius = UDim.new(0, 4)
     item.MouseButton1Click:Connect(function() selScript = scr dropBtn.Text = " 📜 " .. scr.Name dropFrame.Visible = false end)
