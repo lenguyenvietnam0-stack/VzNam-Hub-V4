@@ -229,10 +229,10 @@ local tab4 = CreateCategoryTab("Tab 4")
 local tab5 = CreateCategoryTab("Tab 5")
 
 -- ============================================================================
--- TAB 6: MISC (Tách 3 mục: auto load script, âm nhạc, màu menu)
+-- TAB 6: MISC (Đã sửa font sang Gotham để không bị nhòe chữ)
 -- ============================================================================
 local tabMiscBtn = Instance.new("TextButton", SidebarScroll)
-tabMiscBtn.Size, tabMiscBtn.BackgroundColor3, tabMiscBtn.BackgroundTransparency, tabMiscBtn.Text, tabMiscBtn.TextColor3, tabMiscBtn.TextSize, tabMiscBtn.Font, tabMiscBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   ⚙️ MISC", Color3.fromRGB(255, 255, 255), 11, Enum.Font.GothamBold, Enum.TextXAlignment.Left
+tabMiscBtn.Size, tabMiscBtn.BackgroundColor3, tabMiscBtn.BackgroundTransparency, tabMiscBtn.Text, tabMiscBtn.TextColor3, tabMiscBtn.TextSize, tabMiscBtn.Font, tabMiscBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   ⚙️ MISC", Color3.fromRGB(255, 255, 255), 11, Enum.Font.Gotham, Enum.TextXAlignment.Left
 Instance.new("UICorner", tabMiscBtn).CornerRadius = UDim.new(0, 5)
 local tabMiscStroke = Instance.new("UIStroke", tabMiscBtn) tabMiscStroke.Color, tabMiscStroke.Thickness = Color3.fromRGB(255, 255, 255), 0.8
 
@@ -510,10 +510,10 @@ RunService.RenderStepped:Connect(function()
 end)
 miscScroll.CanvasSize = UDim2.new(0, 0, 0, 1400)
 -- ============================================================================
--- TAB 7: CẤU HÌNH & PROFILES (Hoàn chỉnh, Profiles độc lập với Cấu Hình)
+-- TAB 7: CẤU HÌNH & PROFILES (Đã sửa font sang Gotham để không bị nhòe chữ)
 -- ============================================================================
 local tabConfigBtn = Instance.new("TextButton", SidebarScroll)
-tabConfigBtn.Size, tabConfigBtn.BackgroundColor3, tabConfigBtn.BackgroundTransparency, tabConfigBtn.Text, tabConfigBtn.TextColor3, tabConfigBtn.TextSize, tabConfigBtn.Font, tabConfigBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   📦 CẤU HÌNH", Color3.fromRGB(255, 255, 255), 11, Enum.Font.GothamBold, Enum.TextXAlignment.Left
+tabConfigBtn.Size, tabConfigBtn.BackgroundColor3, tabConfigBtn.BackgroundTransparency, tabConfigBtn.Text, tabConfigBtn.TextColor3, tabConfigBtn.TextSize, tabConfigBtn.Font, tabConfigBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   📦 CẤU HÌNH", Color3.fromRGB(255, 255, 255), 11, Enum.Font.Gotham, Enum.TextXAlignment.Left
 Instance.new("UICorner", tabConfigBtn).CornerRadius = UDim.new(0, 5)
 local tabConfigStroke = Instance.new("UIStroke", tabConfigBtn) tabConfigStroke.Color, tabConfigStroke.Thickness = Color3.fromRGB(255, 255, 255), 0.8
 
@@ -538,7 +538,7 @@ if typeof(makefolder) == "function" then pcall(makefolder, configFolder) end
 local currentConfigName = "Default"
 local startupConfigName = "Default"
 
--- Nút thu gọn Cấu Hình chính (Chỉ ẩn hiện các tính năng bên trong nó, không ảnh hưởng Profiles)
+-- Nút thu gọn Cấu Hình chính
 local configToggleBtn = Instance.new("TextButton", configScroll)
 configToggleBtn.LayoutOrder = 1
 configToggleBtn.Size, configToggleBtn.BackgroundColor3, configToggleBtn.Text, configToggleBtn.TextColor3, configToggleBtn.TextSize, configToggleBtn.Font, configToggleBtn.TextXAlignment = UDim2.new(1, -4, 0, 42), Color3.fromRGB(20, 22, 30), "  ↓ Cấu Hình", Color3.fromRGB(255, 255, 255), 13, Enum.Font.GothamBold, Enum.TextXAlignment.Center
@@ -611,7 +611,7 @@ autoLoadToggle.MouseButton1Click:Connect(function()
     alBox.Position = isAutoLoad and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
 end)
 
--- Nút Profiles (Đặt độc lập ngay bên trong configScroll, không bị ảnh hưởng bởi nút Cấu Hình phía trên)
+-- Nút Profiles độc lập
 local profilesToggleBtn = Instance.new("TextButton", configScroll)
 profilesToggleBtn.LayoutOrder = 3
 profilesToggleBtn.Size, profilesToggleBtn.BackgroundColor3, profilesToggleBtn.Text, profilesToggleBtn.TextColor3, profilesToggleBtn.TextSize, profilesToggleBtn.Font, profilesToggleBtn.TextXAlignment = UDim2.new(1, -4, 0, 42), Color3.fromRGB(20, 22, 30), "  ↓ Profiles", Color3.fromRGB(255, 255, 255), 13, Enum.Font.GothamBold, Enum.TextXAlignment.Center
@@ -673,7 +673,7 @@ delDropFrame.LayoutOrder = 4 delDropFrame.Size, delDropFrame.BackgroundColor3, d
 Instance.new("UICorner", delDropFrame).CornerRadius = UDim.new(0, 5)
 local delDropLayout = Instance.new("UIListLayout", delDropFrame) delDropLayout.Padding = UDim.new(0, 4)
 
--- Cấu Hình Khởi Động Dropdown
+-- Cấu Hình Khởi Động
 local startupProfileFrame = Instance.new("Frame", profilesContainer)
 startupProfileFrame.LayoutOrder = 5 startupProfileFrame.Size, startupProfileFrame.BackgroundColor3 = UDim2.new(1, 0, 0, 38), Color3.fromRGB(22, 25, 34)
 Instance.new("UICorner", startupProfileFrame).CornerRadius = UDim.new(0, 5) Instance.new("UIStroke", startupProfileFrame).Color = Color3.fromRGB(40, 43, 52)
@@ -705,7 +705,7 @@ ldDropFrame.LayoutOrder = 8 ldDropFrame.Size, ldDropFrame.BackgroundColor3, ldDr
 Instance.new("UICorner", ldDropFrame).CornerRadius = UDim.new(0, 5)
 local ldDropLayout = Instance.new("UIListLayout", ldDropFrame) ldDropLayout.Padding = UDim.new(0, 4)
 
--- Lưu Cấu Hình (Save)
+-- Lưu Cấu Hình
 local saveFrame = Instance.new("Frame", profilesContainer)
 saveFrame.LayoutOrder = 9 saveFrame.Size, saveFrame.BackgroundColor3 = UDim2.new(1, 0, 0, 42), Color3.fromRGB(22, 25, 34)
 Instance.new("UICorner", saveFrame).CornerRadius = UDim.new(0, 5) Instance.new("UIStroke", saveFrame).Color = Color3.fromRGB(40, 43, 52)
