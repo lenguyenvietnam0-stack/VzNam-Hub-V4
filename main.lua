@@ -10,14 +10,14 @@ local RegisteredScripts = {}
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "VzNamHubV4UI"
-ScreenGui.DisplayOrder = 10 -- Đảm bảo Menu Script luôn nằm trên cùng
+ScreenGui.DisplayOrder = 999 -- Luôn hiển thị trên cùng, không bao giờ bị che
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
--- Màn hình đen giảm FPS nằm lớp dưới (DisplayOrder thấp hơn để menu script đè lên)
+-- Màn hình đen giảm FPS đặt ở lớp dưới cùng sâu nhất (-999)
 local BlackScreenGui = Instance.new("ScreenGui", CoreGui)
 BlackScreenGui.Name = "VzNamBlackScreen"
-BlackScreenGui.DisplayOrder = 1 
+BlackScreenGui.DisplayOrder = -999 
 BlackScreenGui.IgnoreGuiInset = true
 BlackScreenGui.ResetOnSpawn = false
 BlackScreenGui.Enabled = false
@@ -370,7 +370,7 @@ toggleMusicBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🔊 THANH KÉO ĐIỀU CHỈNH ÂM LƯỢNG (VOLUME SLIDER) KHÔI PHỤC HOÀN CHỈNH
+-- 🔊 THANH KÉO ÂM LƯỢNG
 local volumeFrame = Instance.new("Frame", t6Scroll)
 volumeFrame.LayoutOrder = 13
 volumeFrame.Size, volumeFrame.BackgroundColor3 = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34)
@@ -409,7 +409,7 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- 🎨 PHẦN CHỌN MÀU MENU & XỬ LÝ MÀU CẦU VỒNG (RGB)
+-- 🎨 CHỌN MÀU & CẦU VỒNG
 local colorList = {
     {Name = "🌸 Hồng Kẹo Đắng", Color = Color3.fromRGB(255, 105, 180)},
     {Name = "🌈 Màu Cầu Vồng (RGB)", Color = "Rainbow"},
@@ -454,7 +454,6 @@ colorDropBtn.MouseButton1Click:Connect(function()
     musicDropFrame.Visible = false
 end)
 
--- 🔘 NÚT BẬT/TẮT MÀU MENU TÙY CHỈNH
 local toggleColorBtn = Instance.new("TextButton", t6Scroll)
 toggleColorBtn.LayoutOrder = 16
 toggleColorBtn.Size, toggleColorBtn.BackgroundColor3, toggleColorBtn.Text, toggleColorBtn.TextColor3, toggleColorBtn.TextSize, toggleColorBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(50, 200, 50), "Màu Menu Tùy Chỉnh: BẬT ✅", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
@@ -473,7 +472,6 @@ toggleColorBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Vòng lặp Render cập nhật màu menu chuẩn xác (bao gồm Màu Cầu Vồng RGB)
 RunService.RenderStepped:Connect(function()
     if isColorApplied then
         if selectedColorObj.Color == "Rainbow" then
@@ -487,7 +485,7 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 🖥️ Màn Hình Đen Giảm FPS (ĐÃ SỬA KHÔNG CHE ĐÈ SCRIPT NỮA)
+-- 🖥️ MÀN HÌNH ĐEN GIẢM FPS (ĐÃ FIX AN TOÀN TUYỆT ĐỐI KHÔNG BAO GIỜ CHE SCRIPT)
 local isFpsModeOn = false
 local toggleFpsBtn = Instance.new("TextButton", t6Scroll)
 toggleFpsBtn.LayoutOrder = 17
@@ -508,7 +506,7 @@ end)
 
 t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 620)
 
--- 📐 NÚT KÉO THU PHÓNG RESIZE GÓC PHẢI DƯỚI
+-- 📐 RESIZE GÓC PHẢI DƯỚI
 local ResizeBtn = Instance.new("TextButton", MainFrame)
 ResizeBtn.Size = UDim2.new(0, 16, 0, 16)
 ResizeBtn.Position = UDim2.new(1, -18, 1, -18)
@@ -544,7 +542,7 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- LOGIC LOAD CONFIG VÀ XỬ LÝ SỰ KIỆN ĐÓNG/MỞ DROPDOWN
+-- LOGIC LƯU & TẢI CẤU HÌNH ĐÃ ĐƯỢC FIX HOÀN CHỈNH (ÁP DỤNG ĐÚNG GIÁ TRỊ)
 local function refreshConfigList()
     for _, c in ipairs(configDropFrame:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
     if typeof(listfiles) ~= "function" then return end
@@ -573,7 +571,10 @@ musicDropBtn.MouseButton1Click:Connect(function() musicDropFrame.Visible = not m
 saveConfigBtn.MouseButton1Click:Connect(function()
     local cName = configNameBox.Text
     if cName ~= "" and typeof(writefile) == "function" then
-        pcall(writefile, configFolder .. "/" .. cName .. ".json", HttpService:JSONEncode({Script = selScript and selScript.Name or "", SoundId = currentSoundId}))
+        pcall(writefile, configFolder .. "/" .. cName .. ".json", HttpService:JSONEncode({
+            Script = selScript and selScript.Name or "", 
+            SoundId = currentSoundId
+        }))
         saveConfigBtn.Text = "💾 Đã Lưu Thành Công! ✅"
         task.wait(1.5)
         saveConfigBtn.Text = "💾 Lưu Cấu Hình Này ✅"
@@ -585,8 +586,25 @@ loadConfigBtn.MouseButton1Click:Connect(function()
     if selectedConfigName ~= "" and typeof(readfile) == "function" and isfile(configFolder .. "/" .. selectedConfigName .. ".json") then
         local success, data = pcall(function() return HttpService:JSONDecode(readfile(configFolder .. "/" .. selectedConfigName .. ".json")) end)
         if success and data then
-            currentSoundId = data.SoundId or currentSoundId
-            if HubSound.IsPlaying then HubSound.SoundId = "rbxassetid://" .. currentSoundId HubSound:Play() end
+            -- Áp dụng Sound ID đã lưu vào game
+            if data.SoundId then
+                currentSoundId = data.SoundId
+                musicDropBtn.Text = " 🎵 ID: " .. currentSoundId
+                if HubSound.IsPlaying then
+                    HubSound.SoundId = "rbxassetid://" .. currentSoundId
+                    HubSound:Play()
+                end
+            end
+            -- Áp dụng Script Auto Load đã lưu
+            if data.Script and data.Script ~= "" then
+                for _, scr in ipairs(RegisteredScripts) do
+                    if scr.Name == data.Script then
+                        selScript = scr
+                        dropBtn.Text = " 📜 " .. scr.Name
+                        break
+                    end
+                end
+            end
             loadConfigBtn.Text = "📥 Tải Cấu Hình Thành Công! ✅"
             task.wait(1.5)
             loadConfigBtn.Text = "📥 Tải Cấu Hình Đã Chọn 📂"
