@@ -368,10 +368,49 @@ toggleMusicBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🎨 PHẦN CHỌN MÀU MENU & NÚT BẬT/TẮT MÀU (ĐÃ FIX HIỂN THỊ RÕ RÀNG)
+-- 🔊 THANH KÉO ĐIỀU CHỈNH ÂM LƯỢNG (VOLUME SLIDER)
+local volumeFrame = Instance.new("Frame", t6Scroll)
+volumeFrame.LayoutOrder = 13
+volumeFrame.Size, volumeFrame.BackgroundColor3 = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34)
+Instance.new("UICorner", volumeFrame).CornerRadius = UDim.new(0, 5)
+
+local volumeLabel = Instance.new("TextLabel", volumeFrame)
+volumeLabel.Size, volumeLabel.Position, volumeLabel.BackgroundTransparency, volumeLabel.Text, volumeLabel.TextColor3, volumeLabel.TextSize, volumeLabel.Font, volumeLabel.TextXAlignment = UDim2.new(1, -12, 1, 0), UDim2.new(0, 8, 0, 0), 1, "🔊 Âm lượng: 50%", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
+
+local volumeBarBg = Instance.new("Frame", volumeFrame)
+volumeBarBg.Size, volumeBarBg.Position, volumeBarBg.BackgroundColor3 = UDim2.new(0, 120, 0, 8), UDim2.new(1, -128, 0.5, -4), Color3.fromRGB(35, 40, 50)
+Instance.new("UICorner", volumeBarBg).CornerRadius = UDim.new(1, 0)
+
+local volumeBarFill = Instance.new("Frame", volumeBarBg)
+volumeBarFill.Size, volumeBarFill.BackgroundColor3 = UDim2.new(0.5, 0, 1, 0), Color3.fromRGB(0, 180, 255)
+Instance.new("UICorner", volumeBarFill).CornerRadius = UDim.new(1, 0)
+
+local volumeBtn = Instance.new("TextButton", volumeBarBg)
+volumeBtn.Size, volumeBtn.BackgroundTransparency, volumeBtn.Text = UDim2.new(1, 10, 1, 10), 1, ""
+
+local adjustingVol = false
+volumeBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then adjustingVol = true end
+end)
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then adjustingVol = false end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if adjustingVol and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local absPos = volumeBarBg.AbsolutePosition.X
+        local absSize = volumeBarBg.AbsoluteSize.X
+        local mouseX = input.Position.X
+        local percent = math.clamp((mouseX - absPos) / absSize, 0, 1)
+        volumeBarFill.Size = UDim2.new(percent, 0, 1, 0)
+        HubSound.Volume = percent
+        volumeLabel.Text = "🔊 Âm lượng: " .. math.floor(percent * 100) .. "%"
+    end
+end)
+
+-- 🎨 PHẦN CHỌN MÀU MENU & XỬ LÝ MÀU CẦU VỒNG (RGB)
 local colorList = {
     {Name = "🌸 Hồng Kẹo Đắng", Color = Color3.fromRGB(255, 105, 180)},
-    {Name = "🌈 Màu Cầu Vồng", Color = nil},
+    {Name = "🌈 Màu Cầu Vồng (RGB)", Color = "Rainbow"},
     {Name = "🔴 Đỏ Đậm", Color = Color3.fromRGB(220, 20, 60)},
     {Name = "🔵 Xanh Dương Neon", Color = Color3.fromRGB(0, 191, 255)},
     {Name = "🟢 Xanh Lá Cây", Color = Color3.fromRGB(50, 205, 50)},
@@ -383,12 +422,12 @@ local selectedColorObj = colorList[1]
 local isColorApplied = true
 
 local colorDropBtn = Instance.new("TextButton", t6Scroll)
-colorDropBtn.LayoutOrder = 13
+colorDropBtn.LayoutOrder = 14
 colorDropBtn.Size, colorDropBtn.BackgroundColor3, colorDropBtn.Text, colorDropBtn.TextColor3, colorDropBtn.TextSize, colorDropBtn.Font, colorDropBtn.TextXAlignment = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34), " 🎨 Đã chọn: 🌸 Hồng Kẹo Đắng", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 Instance.new("UICorner", colorDropBtn).CornerRadius = UDim.new(0, 5)
 
 local colorDropFrame = Instance.new("ScrollingFrame", t6Scroll)
-colorDropFrame.LayoutOrder = 14
+colorDropFrame.LayoutOrder = 15
 colorDropFrame.Size, colorDropFrame.BackgroundColor3, colorDropFrame.CanvasSize, colorDropFrame.ScrollBarThickness, colorDropFrame.Visible, colorDropFrame.ClipsDescendants = UDim2.new(1, -4, 0, 100), Color3.fromRGB(28, 32, 42), UDim2.new(0,0,0,0), 3, false, true
 Instance.new("UICorner", colorDropFrame).CornerRadius = UDim.new(0, 5)
 Instance.new("UIListLayout", colorDropFrame).Padding = UDim.new(0, 4)
@@ -402,15 +441,6 @@ for i, cItem in ipairs(colorList) do
         selectedColorObj = cItem
         colorDropBtn.Text = " 🎨 Đã chọn: " .. cItem.Name
         colorDropFrame.Visible = false
-        if isColorApplied then
-            if selectedColorObj.Color then
-                SidebarPanel.BackgroundColor3 = selectedColorObj.Color
-                ContentContainer.BackgroundColor3 = selectedColorObj.Color
-            else
-                SidebarPanel.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
-                ContentContainer.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
-            end
-        end
     end)
 end
 colorDropFrame.CanvasSize = UDim2.new(0, 0, 0, #colorList * 30)
@@ -422,9 +452,9 @@ colorDropBtn.MouseButton1Click:Connect(function()
     musicDropFrame.Visible = false
 end)
 
--- 🔘 NÚT BẬT/TẮT MÀU MENU TÙY CHỈNH (NẰM NGAY DƯỚI BẢNG CHỌN MÀU)
+-- 🔘 NÚT BẬT/TẮT MÀU MENU TÙY CHỈNH
 local toggleColorBtn = Instance.new("TextButton", t6Scroll)
-toggleColorBtn.LayoutOrder = 15
+toggleColorBtn.LayoutOrder = 16
 toggleColorBtn.Size, toggleColorBtn.BackgroundColor3, toggleColorBtn.Text, toggleColorBtn.TextColor3, toggleColorBtn.TextSize, toggleColorBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(50, 200, 50), "Màu Menu Tùy Chỉnh: BẬT ✅", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleColorBtn).CornerRadius = UDim.new(0, 5)
 
@@ -433,10 +463,6 @@ toggleColorBtn.MouseButton1Click:Connect(function()
     if isColorApplied then
         toggleColorBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
         toggleColorBtn.Text = "Màu Menu Tùy Chỉnh: BẬT ✅"
-        if selectedColorObj.Color then
-            SidebarPanel.BackgroundColor3 = selectedColorObj.Color
-            ContentContainer.BackgroundColor3 = selectedColorObj.Color
-        end
     else
         toggleColorBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
         toggleColorBtn.Text = "Màu Menu Tùy Chỉnh: TẮT ❌"
@@ -445,10 +471,24 @@ toggleColorBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Vòng lặp cập nhật màu menu hoặc màu cầu vồng mượt mà
+RunService.RenderStepped:Connect(function()
+    if isColorApplied then
+        if selectedColorObj.Color == "Rainbow" then
+            local rainbowColor = Color3.fromHSV((tick() % 4) / 4, 1, 1)
+            SidebarPanel.BackgroundColor3 = rainbowColor
+            ContentContainer.BackgroundColor3 = rainbowColor
+        elseif typeof(selectedColorObj.Color) == "Color3" then
+            SidebarPanel.BackgroundColor3 = selectedColorObj.Color
+            ContentContainer.BackgroundColor3 = selectedColorObj.Color
+        end
+    end
+end)
+
 -- 🖥️ Màn Hình Đen Giảm FPS
 local isFpsModeOn = false
 local toggleFpsBtn = Instance.new("TextButton", t6Scroll)
-toggleFpsBtn.LayoutOrder = 16
+toggleFpsBtn.LayoutOrder = 17
 toggleFpsBtn.Size, toggleFpsBtn.BackgroundColor3, toggleFpsBtn.Text, toggleFpsBtn.TextColor3, toggleFpsBtn.TextSize, toggleFpsBtn.Font = UDim2.new(1, -4, 0, 32), Color3.fromRGB(200, 50, 50), "Màn Hình Đen Giảm FPS: TẮT ❌", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne
 Instance.new("UICorner", toggleFpsBtn).CornerRadius = UDim.new(0, 5)
 toggleFpsBtn.MouseButton1Click:Connect(function()
@@ -464,8 +504,7 @@ toggleFpsBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Cập nhật CanvasSize cho t6Scroll để cuộn thấy đủ tất cả các nút
-t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 550)
+t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 600)
 
 -- 📐 NÚT KÉO THU PHÓNG RESIZE GÓC PHẢI DƯỚI
 local ResizeBtn = Instance.new("TextButton", MainFrame)
