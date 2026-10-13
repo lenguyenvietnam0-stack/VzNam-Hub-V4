@@ -97,6 +97,89 @@ local HeaderDivider = Instance.new("Frame", ContentContainer) HeaderDivider.Size
 local Tabs = {}
 local FirstTab = nil
 
+-- ============================================================================
+-- TAB 0: TRANG CHỦ
+-- ============================================================================
+local tabHomeBtn = Instance.new("TextButton", SidebarScroll)
+tabHomeBtn.LayoutOrder = 0
+tabHomeBtn.Size, tabHomeBtn.BackgroundColor3, tabHomeBtn.BackgroundTransparency, tabHomeBtn.Text, tabHomeBtn.TextColor3, tabHomeBtn.TextSize, tabHomeBtn.Font, tabHomeBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   🏠 Trang Chủ", Color3.fromRGB(255, 255, 255), 11, Enum.Font.Gotham, Enum.TextXAlignment.Left
+Instance.new("UICorner", tabHomeBtn).CornerRadius = UDim.new(0, 5)
+local tabHomeStroke = Instance.new("UIStroke", tabHomeBtn) tabHomeStroke.Color, tabHomeStroke.Thickness = Color3.fromRGB(255, 255, 255), 0.8
+
+local homeIndicator = Instance.new("Frame", tabHomeBtn)
+homeIndicator.Size, homeIndicator.Position, homeIndicator.BackgroundColor3, homeIndicator.BorderSizePixel, homeIndicator.Visible = UDim2.new(0, 3, 0, 14), UDim2.new(0, 0, 0.5, -7), Color3.fromRGB(255, 105, 180), 0, false
+Instance.new("UICorner", homeIndicator).CornerRadius = UDim.new(0, 2)
+
+local homeScroll = Instance.new("ScrollingFrame", ContentContainer)
+homeScroll.Name = "Container_HOME"
+homeScroll.Size, homeScroll.Position, homeScroll.BackgroundTransparency, homeScroll.BorderSizePixel, homeScroll.ScrollBarThickness, homeScroll.Visible, homeScroll.ClipsDescendants = UDim2.new(1, -12, 1, -38), UDim2.new(0, 6, 0, 34), 1, 0, 3, false, true
+local homeLayout = Instance.new("UIListLayout", homeScroll) homeLayout.SortOrder = Enum.SortOrder.LayoutOrder homeLayout.Padding = UDim.new(0, 6)
+
+tabHomeBtn.MouseButton1Click:Connect(function()
+    for _, t in pairs(Tabs) do t.Container.Visible = false if t.Indicator then t.Indicator.Visible = false end end
+    homeScroll.Visible = true homeIndicator.Visible = true ActiveTabTitle.Text = "🏠 Trang Chủ"
+    SearchInputContent.Text = ""
+end)
+
+local homeTabObj = { Container = homeScroll, Indicator = homeIndicator }
+table.insert(Tabs, homeTabObj)
+FirstTab = homeTabObj
+homeScroll.Visible, homeIndicator.Visible = true, true
+ActiveTabTitle.Text = "🏠 Trang Chủ"
+
+-- Hàm tạo các thẻ thông tin (Đã giảm TextSize xuống 9 cho link phụ)
+local function CreateHomeCardWithIcon(parent, order, bgColor, titleText, mainText, copyText, borderColor, iconSymbol)
+    local card = Instance.new("Frame", parent)
+    card.LayoutOrder = order
+    card.Size, card.BackgroundColor3, card.BorderSizePixel = UDim2.new(1, -4, 0, 42), bgColor, 0
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 6)
+    local stroke = Instance.new("UIStroke", card) stroke.Color, stroke.Thickness = borderColor, 1
+
+    -- Icon Tròn bên trái
+    local iconCircle = Instance.new("Frame", card)
+    iconCircle.Size, iconCircle.Position, iconCircle.BackgroundColor3, iconCircle.BorderSizePixel = UDim2.new(0, 30, 0, 30), UDim2.new(0, 6, 0.5, -15), borderColor, 0
+    Instance.new("UICorner", iconCircle).CornerRadius = UDim.new(1, 0)
+    
+    local iconLbl = Instance.new("TextLabel", iconCircle)
+    iconLbl.Size, iconLbl.BackgroundTransparency, iconLbl.Text, iconLbl.TextColor3, iconLbl.TextSize, iconLbl.Font = UDim2.new(1, 0, 1, 0), 1, iconSymbol, Color3.fromRGB(255, 255, 255), 13, Enum.Font.GothamBold
+
+    local tLbl = Instance.new("TextLabel", card)
+    tLbl.Size, tLbl.Position, tLbl.BackgroundTransparency, tLbl.Text, tLbl.TextColor3, tLbl.TextSize, tLbl.Font, tLbl.TextXAlignment = UDim2.new(1, -120, 0, 14), UDim2.new(0, 44, 0, 4), 1, titleText, Color3.fromRGB(255, 150, 100), 9, Enum.Font.GothamBold, Enum.TextXAlignment.Left
+
+    -- TextSize chỉnh về 9 cho gọn và không bị to
+    local mLbl = Instance.new("TextLabel", card)
+    mLbl.Size, mLbl.Position, mLbl.BackgroundTransparency, mLbl.Text, mLbl.TextColor3, mLbl.TextSize, mLbl.Font, mLbl.TextXAlignment = UDim2.new(1, -120, 0, 18), UDim2.new(0, 44, 0, 19), 1, mainText, Color3.fromRGB(220, 220, 230), 9, Enum.Font.Gotham, Enum.TextXAlignment.Left
+
+    if copyText ~= "" then
+        local copyBtn = Instance.new("TextButton", card)
+        copyBtn.Size, copyBtn.Position, copyBtn.BackgroundTransparency, copyBtn.Text, copyBtn.TextColor3, copyBtn.TextSize, copyBtn.Font = UDim2.new(0, 65, 0, 24), UDim2.new(1, -73, 0.5, -12), 1, "📋 COPY", Color3.fromRGB(200, 200, 210), 10, Enum.Font.GothamBold
+        
+        local function doCopy()
+            if typeof(setclipboard) == "function" then
+                pcall(setclipboard, copyText)
+                copyBtn.Text = "✓ COPIED"
+                task.delay(1.5, function() copyBtn.Text = "📋 COPY" end)
+            end
+        end
+        copyBtn.MouseButton1Click:Connect(doCopy)
+        card.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then doCopy() end
+        end)
+    end
+end
+
+-- 1. Thẻ: Được tạo bởi VzNam Roblox (Icon người 👤)
+CreateHomeCardWithIcon(homeScroll, 1, Color3.fromRGB(45, 25, 30), "ĐƯỢC TẠO BỞI", "VzNam ROBLOX", "", Color3.fromRGB(180, 50, 50), "👤")
+
+-- 2. Thẻ: Discord Server (Icon chat 💬)
+CreateHomeCardWithIcon(homeScroll, 2, Color3.fromRGB(30, 35, 55), "DISCORD SERVER", "https://discord.gg/6TG7krbsU", "https://discord.gg/6TG7krbsU", Color3.fromRGB(60, 100, 200), "💬")
+
+-- 3. Thẻ: TikTok Channel (Icon video 🎵)
+CreateHomeCardWithIcon(homeScroll, 3, Color3.fromRGB(35, 35, 45), "TIKTOK CHANNEL", "https://www.tiktok.com/@uttop1gl.ovo?_r=1&_t=ZS-9AWatTQR08y", "https://www.tiktok.com/@uttop1gl.ovo?_r=1&_t=ZS-9AWatTQR08y", Color3.fromRGB(100, 100, 120), "🎵")
+
+homeScroll.CanvasSize = UDim2.new(0, 0, 0, 160)
+
+-- Hàm tạo các Tab Chức Năng
 local function CreateCategoryTab(tabName)
     local tabBtn = Instance.new("TextButton", SidebarScroll)
     tabBtn.Size, tabBtn.BackgroundColor3, tabBtn.BackgroundTransparency, tabBtn.Text, tabBtn.TextColor3, tabBtn.TextSize, tabBtn.Font, tabBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   " .. tabName, Color3.fromRGB(255, 255, 255), 11, Enum.Font.Gotham, Enum.TextXAlignment.Left
@@ -167,12 +250,6 @@ local function CreateCategoryTab(tabName)
     local tabObj = { Container = containerFrame, Indicator = indicator }
     table.insert(Tabs, tabObj)
 
-    if not FirstTab then
-        FirstTab = tabObj
-        containerFrame.Visible, indicator.Visible = true, true
-        ActiveTabTitle.Text = tabName
-    end
-
     local Elements = {}
     local function AddBtnTo(parent, name, callback)
         local Btn = Instance.new("TextButton", parent)
@@ -193,7 +270,6 @@ local function CreateCategoryTab(tabName)
     function Elements:AddHasKey(name, callback) AddBtnTo(scrollHasKey, name, callback) end
     return Elements
 end
-
 -- TAB 1: STEAL AN EGG
 local tab1 = CreateCategoryTab("🌸STEAL AN EGG🌸")
 tab1:AddNoKey("1. Hop sv1 người(nokey)", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))() end)
@@ -209,6 +285,7 @@ tab1:AddHasKey("5. Speed hub(có key)", function() loadstring(game:HttpGet("http
 tab1:AddHasKey("6. Neohub(có key)", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/neohubdev/script/main/script"))() end)
 tab1:AddHasKey("7. Real kid(có key)", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/realkidhub/realkid/refs/heads/main/main.lua"))() end)
 tab1:AddHasKey("8. Chilli v2(có key)", function() loadstring(game:HttpGet("https://gist.githubusercontent.com/ronnei/1fa67c56dd9af203b192d15e752928e5/raw/4e2d5105640e09a008b4ae6df23f9708cadfef06/chilliv2-stealanegg"))() end)
+
 -- TAB 2: BLOX FRUIT
 local tab2 = CreateCategoryTab("🌸BLOX FRUIT🌸")
 tab2:AddNoKey("1. RedzHub v2 (no key)", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/UCT-hub/main/refs/heads/main/redz-v2"))() end)
@@ -221,15 +298,13 @@ tab2:AddHasKey("4. Gravity Hub(có key)", function() loadstring(game:HttpGet("ht
 tab2:AddHasKey("5. Realkid hub(có key)", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/realkidhub/realkid/refs/heads/main/main.lua"))() end)
 tab2:AddHasKey("6. BananaHub(có key)", function() repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer getgenv().Team = "Marines" loadstring(game:HttpGet("https://raw.githubusercontent.com/obiyeueim/vthangsitink/main/BananaHub.lua"))() end)
 
--- TAB 3, 4, 5
 local tab3 = CreateCategoryTab("🌸BREAK AN STEAL🌸")
 tab3:AddNoKey("1. break and steal an egg", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/joustingmatch/Ouroboros/main/loader.lua"))() end)
 
 local tab4 = CreateCategoryTab("Tab 4")
 local tab5 = CreateCategoryTab("Tab 5")
-
 -- ============================================================================
--- TAB 6: MISC (Đã sửa font sang Gotham để không bị nhòe chữ)
+-- TAB 6: MISC
 -- ============================================================================
 local tabMiscBtn = Instance.new("TextButton", SidebarScroll)
 tabMiscBtn.Size, tabMiscBtn.BackgroundColor3, tabMiscBtn.BackgroundTransparency, tabMiscBtn.Text, tabMiscBtn.TextColor3, tabMiscBtn.TextSize, tabMiscBtn.Font, tabMiscBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   ⚙️ MISC", Color3.fromRGB(255, 255, 255), 11, Enum.Font.Gotham, Enum.TextXAlignment.Left
@@ -308,6 +383,7 @@ toggleAutoBtn.MouseButton1Click:Connect(function()
         toggleAutoBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 75) autoDot.Position = UDim2.new(0, 2, 0.5, -8)
     end
 end)
+
 -- 2. Mục: → âm nhạc
 local musicToggleBtn = Instance.new("TextButton", miscScroll)
 musicToggleBtn.LayoutOrder = 3
@@ -510,7 +586,7 @@ RunService.RenderStepped:Connect(function()
 end)
 miscScroll.CanvasSize = UDim2.new(0, 0, 0, 1400)
 -- ============================================================================
--- TAB 7: CẤU HÌNH & PROFILES (Đã sửa font sang Gotham để không bị nhòe chữ)
+-- TAB 7: CẤU HÌNH & PROFILES
 -- ============================================================================
 local tabConfigBtn = Instance.new("TextButton", SidebarScroll)
 tabConfigBtn.Size, tabConfigBtn.BackgroundColor3, tabConfigBtn.BackgroundTransparency, tabConfigBtn.Text, tabConfigBtn.TextColor3, tabConfigBtn.TextSize, tabConfigBtn.Font, tabConfigBtn.TextXAlignment = UDim2.new(1, 0, 0, 32), Color3.fromRGB(22, 25, 34), 0, "   📦 CẤU HÌNH", Color3.fromRGB(255, 255, 255), 11, Enum.Font.Gotham, Enum.TextXAlignment.Left
