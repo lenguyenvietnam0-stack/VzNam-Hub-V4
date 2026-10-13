@@ -65,10 +65,30 @@ SidebarPanel.Parent = MainFrame
 Instance.new("UICorner", SidebarPanel).CornerRadius = UDim.new(0, 6)
 local SidebarStroke = Instance.new("UIStroke") SidebarStroke.Color, SidebarStroke.Thickness = Color3.fromRGB(40, 43, 52), 1 SidebarStroke.Parent = SidebarPanel
 
+-- 🔍 1. TÌM KIẾM CỘT TAB (SIDEBAR)
+local SearchBoxTab = Instance.new("TextBox")
+SearchBoxTab.Size, SearchBoxTab.Position, SearchBoxTab.BackgroundColor3, SearchBoxTab.BackgroundTransparency, SearchBoxTab.Text, SearchBoxTab.PlaceholderText, SearchBoxTab.PlaceholderColor3, SearchBoxTab.TextColor3, SearchBoxTab.TextSize, SearchBoxTab.Font = UDim2.new(1, -10, 0, 24), UDim2.new(0, 5, 0, 5), Color3.fromRGB(22, 25, 34), 0, "", "🔍 Search tab...", Color3.fromRGB(130, 135, 145), Color3.fromRGB(255, 255, 255), 10, Enum.Font.FredokaOne
+SearchBoxTab.Parent = SidebarPanel
+Instance.new("UICorner", SearchBoxTab).CornerRadius = UDim.new(0, 4)
+
 local SidebarScroll = Instance.new("ScrollingFrame")
-SidebarScroll.Size, SidebarScroll.Position, SidebarScroll.BackgroundTransparency, SidebarScroll.BorderSizePixel, SidebarScroll.ScrollBarThickness = UDim2.new(1, -8, 1, -8), UDim2.new(0, 4, 0, 4), 1, 0, 2
+SidebarScroll.Size, SidebarScroll.Position, SidebarScroll.BackgroundTransparency, SidebarScroll.BorderSizePixel, SidebarScroll.ScrollBarThickness = UDim2.new(1, -8, 1, -34), UDim2.new(0, 4, 0, 32), 1, 0, 2
 SidebarScroll.Parent = SidebarPanel
 local SidebarLayout = Instance.new("UIListLayout") SidebarLayout.SortOrder, SidebarLayout.Padding = Enum.SortOrder.LayoutOrder, UDim.new(0, 2) SidebarLayout.Parent = SidebarScroll
+
+-- Lọc danh sách Tab theo từ khóa nhập vào SearchBoxTab
+SearchBoxTab:GetPropertyChangedSignal("Text"):Connect(function()
+    local query = string.lower(SearchBoxTab.Text)
+    for _, item in ipairs(SidebarScroll:GetChildren()) do
+        if item:IsA("TextButton") then
+            if query == "" or string.find(string.lower(item.Text), query) then
+                item.Visible = true
+            else
+                item.Visible = false
+            end
+        end
+    end
+end)
 
 local ContentContainer = Instance.new("Frame")
 ContentContainer.Name = "ContentContainer"
@@ -80,8 +100,26 @@ local ContentStroke = Instance.new("UIStroke") ContentStroke.Color, ContentStrok
 local ContentHeader = Instance.new("Frame") ContentHeader.Size, ContentHeader.BackgroundTransparency = UDim2.new(1, 0, 0, 30), 1 ContentHeader.Parent = ContentContainer
 
 local ActiveTabTitle = Instance.new("TextLabel")
-ActiveTabTitle.Size, ActiveTabTitle.Position, ActiveTabTitle.BackgroundTransparency, ActiveTabTitle.Text, ActiveTabTitle.TextColor3, ActiveTabTitle.TextSize, ActiveTabTitle.Font, ActiveTabTitle.TextXAlignment = UDim2.new(1, -12, 1, 0), UDim2.new(0, 12, 0, 0), 1, "", Color3.fromRGB(255, 255, 255), 12, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
+ActiveTabTitle.Size, ActiveTabTitle.Position, ActiveTabTitle.BackgroundTransparency, ActiveTabTitle.Text, ActiveTabTitle.TextColor3, ActiveTabTitle.TextSize, ActiveTabTitle.Font, ActiveTabTitle.TextXAlignment = UDim2.new(1, -40, 1, 0), UDim2.new(0, 12, 0, 0), 1, "", Color3.fromRGB(255, 255, 255), 12, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 ActiveTabTitle.Parent = ContentHeader
+
+-- 🔍 2. Ô TÌM KIẾM CHỨC NĂNG BÊN GÓC PHẢI
+local SearchInputContent = Instance.new("TextBox")
+SearchInputContent.Size, SearchInputContent.Position, SearchInputContent.BackgroundColor3, SearchInputContent.TextColor3, SearchInputContent.PlaceholderText, SearchInputContent.PlaceholderColor3, SearchInputContent.TextSize, SearchInputContent.Font, SearchInputContent.Visible = UDim2.new(1, -45, 0, 22), UDim2.new(0, 10, 0.5, -11), Color3.fromRGB(22, 25, 34), Color3.fromRGB(255, 255, 255), "Search features...", Color3.fromRGB(140, 140, 150), 10, Enum.Font.FredokaOne, false
+SearchInputContent.Parent = ContentHeader
+Instance.new("UICorner", SearchInputContent).CornerRadius = UDim.new(0, 4)
+
+local SearchContentIcon = Instance.new("TextButton")
+SearchContentIcon.Size, SearchContentIcon.Position, SearchContentIcon.BackgroundTransparency, SearchContentIcon.Text, SearchContentIcon.TextSize, SearchContentIcon.TextColor3 = UDim2.new(0, 24, 0, 24), UDim2.new(1, -28, 0.5, -12), 1, "🔍", 12, Color3.fromRGB(200, 205, 215)
+SearchContentIcon.Parent = ContentHeader
+
+local searching = false
+SearchContentIcon.MouseButton1Click:Connect(function()
+    searching = not searching
+    SearchInputContent.Visible = searching
+    ActiveTabTitle.Visible = not searching
+    if searching then SearchInputContent:CaptureFocus() else SearchInputContent.Text = "" end
+end)
 
 local HeaderDivider = Instance.new("Frame") HeaderDivider.Size, HeaderDivider.Position, HeaderDivider.BackgroundColor3, HeaderDivider.BorderSizePixel = UDim2.new(1, 0, 0, 1), UDim2.new(0, 0, 0, 30), Color3.fromRGB(40, 43, 52), 0 HeaderDivider.Parent = ContentContainer
 local Tabs = {}
@@ -101,7 +139,6 @@ local function CreateCategoryTab(tabName)
     containerFrame.Size, containerFrame.Position, containerFrame.BackgroundTransparency, containerFrame.Visible = UDim2.new(1, -12, 1, -38), UDim2.new(0, 6, 0, 34), 1, false
     containerFrame.Parent = ContentContainer
 
-    -- Thanh chuyển No Key / Có Key
     local subBar = Instance.new("Frame", containerFrame) subBar.Size, subBar.BackgroundTransparency = UDim2.new(1, 0, 0, 26), 1
     local subLayout = Instance.new("UIListLayout", subBar) subLayout.FillDirection, subLayout.Padding = Enum.FillDirection.Horizontal, UDim.new(0, 6)
 
@@ -121,6 +158,23 @@ local function CreateCategoryTab(tabName)
     local scrollHasKey = Instance.new("ScrollingFrame", containerFrame) scrollHasKey.Position, scrollHasKey.Size, scrollHasKey.BackgroundTransparency, scrollHasKey.BorderSizePixel, scrollHasKey.ScrollBarThickness, scrollHasKey.Visible, scrollHasKey.ClipsDescendants = UDim2.new(0, 0, 0, 32), UDim2.new(1, 0, 1, -32), 1, 0, 3, false, true
     local l2 = Instance.new("UIListLayout", scrollHasKey) l2.Padding = UDim.new(0, 5)
 
+    -- Lọc danh sách nút script trong Tab hiện tại
+    SearchInputContent:GetPropertyChangedSignal("Text"):Connect(function()
+        if containerFrame.Visible then
+            local query = string.lower(SearchInputContent.Text)
+            local targetScroll = scrollNoKey.Visible and scrollNoKey or scrollHasKey
+            for _, item in ipairs(targetScroll:GetChildren()) do
+                if item:IsA("TextButton") then
+                    if query == "" or string.find(string.lower(item.Text), query) then
+                        item.Visible = true
+                    else
+                        item.Visible = false
+                    end
+                end
+            end
+        end
+    end)
+
     noKeyBtn.MouseButton1Click:Connect(function()
         scrollNoKey.Visible, scrollHasKey.Visible = true, false
         nkStroke.Color, nkStroke.Thickness = Color3.fromRGB(255, 50, 50), 2
@@ -136,6 +190,7 @@ local function CreateCategoryTab(tabName)
         for _, t in pairs(Tabs) do t.Container.Visible, t.Indicator.Visible = false, false end
         containerFrame.Visible, indicator.Visible = true, true
         ActiveTabTitle.Text = tabName
+        SearchInputContent.Text = ""
     end)
 
     local tabObj = { Container = containerFrame, Indicator = indicator }
@@ -203,7 +258,7 @@ tab3:AddNoKey("1. break and steal an egg", function() loadstring(game:HttpGet("h
 local tab4 = CreateCategoryTab("Tab 4")
 local tab5 = CreateCategoryTab("Tab 5")
 
--- TAB 6: KHÁC (TẬP HỢP ĐẦY ĐỦ CÁC CHỨC NĂNG CỦA BẠN)
+-- TAB 6: KHÁC
 local tab6Btn = Instance.new("TextButton")
 tab6Btn.Size, tab6Btn.BackgroundTransparency, tab6Btn.Text, tab6Btn.TextColor3, tab6Btn.TextSize, tab6Btn.Font, tab6Btn.TextXAlignment = UDim2.new(1, 0, 0, 28), 1, "   👾KHÁC👾", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 tab6Btn.Parent = SidebarScroll
@@ -225,7 +280,7 @@ tab6Btn.MouseButton1Click:Connect(function()
 end)
 table.insert(Tabs, {Container = t6Scroll, Indicator = t6Indicator})
 
--- CÁC CHỨC NĂNG TAB KHÁC
+-- TOÀN BỘ CHỨC NĂNG TAB KHÁC
 local configFolder = "VzNamHub_Configs"
 if typeof(makefolder) == "function" then pcall(makefolder, configFolder) end
 
@@ -332,7 +387,44 @@ toggleFpsBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- LOGIC LOAD & LƯU CONFIG
+-- 📐 NÚT KÉO THU PHÓNG BÊN GÓC PHẢI DƯỚI
+local ResizeBtn = Instance.new("TextButton")
+ResizeBtn.Size = UDim2.new(0, 16, 0, 16)
+ResizeBtn.Position = UDim2.new(1, -18, 1, -18)
+ResizeBtn.BackgroundTransparency = 1
+ResizeBtn.Text = "◢"
+ResizeBtn.TextColor3 = Color3.fromRGB(180, 180, 190)
+ResizeBtn.TextSize = 12
+ResizeBtn.Font = Enum.Font.FredokaOne
+ResizeBtn.Parent = MainFrame
+
+local resizing = false
+local startInput, startSize
+
+ResizeBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        resizing = true
+        startInput = input.Position
+        startSize = MainFrame.Size
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - startInput
+        local newX = math.max(400, startSize.X.Offset + delta.X)
+        local newY = math.max(260, startSize.Y.Offset + delta.Y)
+        MainFrame.Size = UDim2.new(0, newX, 0, newY)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        resizing = false
+    end
+end)
+
+-- LOGIC LOAD CONFIG
 local function refreshConfigList()
     for _, c in ipairs(configDropFrame:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
     if typeof(listfiles) ~= "function" then return end
@@ -403,7 +495,7 @@ toggleAuto.MouseButton1Click:Connect(function()
     end
 end)
 
--- NÚT AVATAR MỞ MENU VIỀN RAINBOW
+-- NÚT NỔI BẬT AVATAR MỞ MENU VIỀN RAINBOW
 local OpenButton = Instance.new("ImageButton")
 OpenButton.Name, OpenButton.Size, OpenButton.Position, OpenButton.BackgroundColor3, OpenButton.BorderSizePixel, OpenButton.Image, OpenButton.Active, OpenButton.Draggable = "VzNamOpenBtn", UDim2.new(0, 42, 0, 42), UDim2.new(0, 15, 0.2, 0), Color3.fromRGB(20, 22, 28), 0, avatarUrl, true, true
 OpenButton.Parent = ScreenGui
