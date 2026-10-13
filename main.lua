@@ -10,12 +10,14 @@ local RegisteredScripts = {}
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "VzNamHubV4UI"
+ScreenGui.DisplayOrder = 10 -- Đảm bảo Menu Script luôn nằm trên cùng
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
+-- Màn hình đen giảm FPS nằm lớp dưới (DisplayOrder thấp hơn để menu script đè lên)
 local BlackScreenGui = Instance.new("ScreenGui", CoreGui)
 BlackScreenGui.Name = "VzNamBlackScreen"
-BlackScreenGui.DisplayOrder = 5
+BlackScreenGui.DisplayOrder = 1 
 BlackScreenGui.IgnoreGuiInset = true
 BlackScreenGui.ResetOnSpawn = false
 BlackScreenGui.Enabled = false
@@ -368,7 +370,7 @@ toggleMusicBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🔊 THANH KÉO ĐIỀU CHỈNH ÂM LƯỢNG (VOLUME SLIDER)
+-- 🔊 THANH KÉO ĐIỀU CHỈNH ÂM LƯỢNG (VOLUME SLIDER) KHÔI PHỤC HOÀN CHỈNH
 local volumeFrame = Instance.new("Frame", t6Scroll)
 volumeFrame.LayoutOrder = 13
 volumeFrame.Size, volumeFrame.BackgroundColor3 = UDim2.new(1, -4, 0, 32), Color3.fromRGB(22, 25, 34)
@@ -378,7 +380,7 @@ local volumeLabel = Instance.new("TextLabel", volumeFrame)
 volumeLabel.Size, volumeLabel.Position, volumeLabel.BackgroundTransparency, volumeLabel.Text, volumeLabel.TextColor3, volumeLabel.TextSize, volumeLabel.Font, volumeLabel.TextXAlignment = UDim2.new(1, -12, 1, 0), UDim2.new(0, 8, 0, 0), 1, "🔊 Âm lượng: 50%", Color3.fromRGB(255, 255, 255), 11, Enum.Font.FredokaOne, Enum.TextXAlignment.Left
 
 local volumeBarBg = Instance.new("Frame", volumeFrame)
-volumeBarBg.Size, volumeBarBg.Position, volumeBarBg.BackgroundColor3 = UDim2.new(0, 120, 0, 8), UDim2.new(1, -128, 0.5, -4), Color3.fromRGB(35, 40, 50)
+volumeBarBg.Size, volumeBarBg.Position, volumeBarBg.BackgroundColor3 = UDim2.new(0, 110, 0, 8), UDim2.new(1, -118, 0.5, -4), Color3.fromRGB(35, 40, 50)
 Instance.new("UICorner", volumeBarBg).CornerRadius = UDim.new(1, 0)
 
 local volumeBarFill = Instance.new("Frame", volumeBarBg)
@@ -471,7 +473,7 @@ toggleColorBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Vòng lặp cập nhật màu menu hoặc màu cầu vồng mượt mà
+-- Vòng lặp Render cập nhật màu menu chuẩn xác (bao gồm Màu Cầu Vồng RGB)
 RunService.RenderStepped:Connect(function()
     if isColorApplied then
         if selectedColorObj.Color == "Rainbow" then
@@ -485,7 +487,7 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 🖥️ Màn Hình Đen Giảm FPS
+-- 🖥️ Màn Hình Đen Giảm FPS (ĐÃ SỬA KHÔNG CHE ĐÈ SCRIPT NỮA)
 local isFpsModeOn = false
 local toggleFpsBtn = Instance.new("TextButton", t6Scroll)
 toggleFpsBtn.LayoutOrder = 17
@@ -504,7 +506,7 @@ toggleFpsBtn.MouseButton1Click:Connect(function()
     end
 end)
 
-t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 600)
+t6Scroll.CanvasSize = UDim2.new(0, 0, 0, 620)
 
 -- 📐 NÚT KÉO THU PHÓNG RESIZE GÓC PHẢI DƯỚI
 local ResizeBtn = Instance.new("TextButton", MainFrame)
