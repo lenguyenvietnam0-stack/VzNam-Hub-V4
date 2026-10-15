@@ -671,7 +671,7 @@ end)
 
 -- ═════════════════ TAB: STEAL EGG VZNAM HUB ═════════════════
 local tabMain = CreateSimpleTab("👑 STEAL EGG VZNAM HUB 👑", 3)
-tabMain:AddScript("VzNamHub-Main", function()
+tabMain:AddScript("VzNamHub-Main {❗khi bật script này sẽ bị tắt script (VzNam Hub v4 : Tổng Hợp) hiện tại", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/lenguyenvietnam0-stack/VzNamHub-Main/refs/heads/main/main.lua"))()
 end)
 
