@@ -671,41 +671,8 @@ end)
 
 -- ═════════════════ TAB: STEAL EGG VZNAM HUB ═════════════════
 local tabMain = CreateSimpleTab("👑 STEAL EGG VZNAM HUB 👑", 3)
-
--- ── Script chính VzNam Hub Tổng Hợp ──
-tabMain:AddScript("⭐ VzNam Hub v4 : Tổng Hợp ⭐", function()
-    SafeLoad("https://raw.githubusercontent.com/lenguyenvietnam0-stack/VzNamHub-Main/refs/heads/main/main.lua")
-end)
-
--- ── Scripts từ STEAL AN EGG ──
-tabMain:AddScript("1. Hop sv1 người", function() SafeLoad("https://raw.githubusercontent.com/raw-roblox/PrivateServerBypass/refs/heads/main/lua") end)
-tabMain:AddScript("2. FyyCommunity", function() SafeLoad("https://FyyCommunity.my.id") end)
-tabMain:AddScript("3. Chilli Hub V4", function() SafeLoad("https://id.tomroblox.com/raw/kairoblox/chilli-hub-viet-hoa-v4") end)
-tabMain:AddScript("4. Night hub", function() SafeLoad("https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/StealAnEggs.luau") end)
-tabMain:AddScript("5. Lemon Hub v4", function() SafeLoad("https://raw.githubusercontent.com/owenzeke99-tech/lennonhubv4/refs/heads/main/lennonhubkeyless.txt") end)
-tabMain:AddScript("6. Hoshi hub", function() SafeLoad("https://raw.githubusercontent.com/napun87/stealanegg/refs/heads/main/hosi.lua") end)
-tabMain:AddScript("7. Bigfroot", function() SafeLoad("https://raw.githubusercontent.com/hanniii1/Loader/refs/heads/main/BFLoader.lua") end)
-tabMain:AddScript("8. Chữ A (ajjans)", function() SafeLoad("https://api.luarmor.net/files/v4/loaders/359e97f8618e9008afe5f496184ebb7c.lua") end)
-tabMain:AddScript("9. Speed hub", function() SafeLoad("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua") end)
-tabMain:AddScript("10. Neohub", function() SafeLoad("https://raw.githubusercontent.com/neohubdev/script/main/script") end)
-tabMain:AddScript("11. Real kid", function() SafeLoad("https://raw.githubusercontent.com/realkidhub/realkid/refs/heads/main/main.lua") end)
-tabMain:AddScript("12. Chilli v2", function() SafeLoad("https://gist.githubusercontent.com/ronnei/1fa67c56dd9af203b192d15e752928e5/raw/4e2d5105640e09a008b4ae6df23f9708cadfef06/chilliv2-stealanegg") end)
-
--- ── Scripts từ BLOX FRUIT ──
-tabMain:AddScript("13. RedzHub v2", function() SafeLoad("https://raw.githubusercontent.com/UCT-hub/main/refs/heads/main/redz-v2") end)
-tabMain:AddScript("14. Quantumx Hub", function() SafeLoad("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua") end)
-tabMain:AddScript("15. Speed Hub (BF)", function() SafeLoad("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua") end)
-tabMain:AddScript("16. Omg Hub", function() SafeLoad("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua") end)
-tabMain:AddScript("17. TeddyHub", function()
-    repeat task.wait() until game:IsLoaded() and Players.LocalPlayer and Players.LocalPlayer:FindFirstChild("PlayerGui")
-    SafeLoad("https://raw.githubusercontent.com/teddyhubdev/diepvy/refs/heads/main/TeddyHub.lua")
-end)
-tabMain:AddScript("18. Gravity Hub", function() SafeLoad("https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua") end)
-tabMain:AddScript("19. Realkid hub (BF)", function() SafeLoad("https://raw.githubusercontent.com/realkidhub/realkid/refs/heads/main/main.lua") end)
-tabMain:AddScript("20. BananaHub", function()
-    repeat task.wait() until game:IsLoaded() and Players.LocalPlayer
-    getgenv().Team = "Marines"
-    SafeLoad("https://raw.githubusercontent.com/obiyeueim/vthangsitink/main/BananaHub.lua")
+tabMain:AddScript("VzNamHub-Main", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lenguyenvietnam0-stack/VzNamHub-Main/refs/heads/main/main.lua"))()
 end)
 
 -- ═════════════════ TAB: MISC ═════════════════
