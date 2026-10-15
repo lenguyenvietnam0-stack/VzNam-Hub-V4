@@ -670,7 +670,7 @@ tab2:AddHasKey("6. BananaHub(có key)", function()
 end)
 
 -- ═════════════════ TAB: STEAL EGG VZNAM HUB ═════════════════
-local tabMain = CreateSimpleTab("👑 STEAL EGG VZNAM HUB 👑", 3)
+local tabMain = CreateSimpleTab("👑 VZNAM HUB - MAIN 👑", 3)
 tabMain:AddScript("VzNamHub-Main(❗script này sẽ tắt khi bật)", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/lenguyenvietnam0-stack/VzNamHub-Main/refs/heads/main/main.lua"))()
 end)
