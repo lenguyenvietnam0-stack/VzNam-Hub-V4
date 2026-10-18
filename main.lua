@@ -1,6 +1,6 @@
 --[[
     ═══════════════════════════════════════════════════════
-    VzNam Hub v4 : Tổng Hợp (Bản Tối Ưu Hóa - Siêu Mượt)
+    VzNam Hub v4 : Tổng Hợp (Bản Có Thông Báo Tên Script)
     ═══════════════════════════════════════════════════════
 ]]
 
@@ -66,7 +66,7 @@ local function RegTheme(el, t)
     return el
 end
 
--- Hàm tạo nút bằng TextButton thuần (Không còn cơ chế bảo vệ gây lag)
+-- Hàm tạo nút bằng TextButton thuần
 local function CreateCustomButton(parent, text, themeType)
     local btn = Instance.new("TextButton", parent)
     btn.BackgroundColor3 = Color3.fromRGB(70,15,50)
@@ -130,6 +130,32 @@ pcall(function()
         ScreenGui.Parent = CoreGui
     end
 end)
+
+-- Hàm hiển thị thông báo (Đã nới rộng kích thước)
+local function ShowToast(message)
+    local toast = Instance.new("TextLabel")
+    toast.Size = UDim2.new(0, 280, 0, 36)
+    toast.Position = UDim2.new(0.5, -140, 1, 0)
+    toast.BackgroundColor3 = Color3.fromRGB(45, 180, 45)
+    toast.BackgroundTransparency = 0.1
+    toast.Text = message
+    toast.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toast.TextSize = 12
+    toast.Font = Enum.Font.GothamBold
+    toast.Parent = ScreenGui
+    Corner(toast, UDim.new(0, 8))
+    Stroke(toast, Color3.fromRGB(0, 255, 0), 2)
+
+    local showTween = TweenService:Create(toast, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -140, 1, -50)})
+    showTween:Play()
+
+    task.delay(2, function()
+        local hideTween = TweenService:Create(toast, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -140, 1, 0)})
+        hideTween:Play()
+        hideTween.Completed:Wait()
+        toast:Destroy()
+    end)
+end
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 380, 0, 280)
@@ -396,7 +422,7 @@ CreateHomeCard(infoContainer, 3, Color3.fromRGB(45,45,65), "TIKTOK CHANNEL", "ht
 
 -- ═════════════════ TAB TEMPLATE ═════════════════
 local RegisteredScripts = {}
-local LastSelectedScriptStroke = nil
+-- Đã xoá biến LastSelectedScriptStroke vì không cần dùng nữa
 
 local function CreateCategoryTab(tabName, layoutOrder)
     local tabBtn, _ = CreateCustomButton(SidebarScroll, " " .. tabName, "Primary")
@@ -488,16 +514,15 @@ local function CreateCategoryTab(tabName, layoutOrder)
 
     local Elements = {}
     local function AddBtnTo(parent, name, callback)
-        local btn, bStroke = CreateCustomButton(parent, " ▶ " .. name, "Primary")
+        -- Dùng dấu gạch dưới cho biến bStroke vì không dùng đến nữa
+        local btn, _ = CreateCustomButton(parent, " ▶ " .. name, "Primary")
         btn.Size = UDim2.new(1, 0, 0, 26)
 
         Track(btn.MouseButton1Click:Connect(function()
-            if LastSelectedScriptStroke then
-                LastSelectedScriptStroke.Color = Color3.fromRGB(0,191,255)
-                LastSelectedScriptStroke.Thickness = 1
-            end
-            bStroke.Color, bStroke.Thickness = Color3.fromRGB(50,200,50), 2
-            LastSelectedScriptStroke = bStroke
+            -- Đã xoá phần đổi viền xanh lá ở đây
+            
+            -- Thêm tên script viết hoa vào thông báo
+            ShowToast("✅ script | " .. string.upper(name) .. " | đã được bật")
             
             MainFrame.Visible = false
             pcall(callback)
@@ -568,16 +593,14 @@ local function CreateSimpleTab(tabName, layoutOrder)
 
     local Elements = {}
     local function AddBtn(name, callback)
-        local btn, bStroke = CreateCustomButton(scroll, " ▶ " .. name, "Primary")
+        local btn, _ = CreateCustomButton(scroll, " ▶ " .. name, "Primary")
         btn.Size = UDim2.new(1, 0, 0, 26)
 
         Track(btn.MouseButton1Click:Connect(function()
-            if LastSelectedScriptStroke then
-                LastSelectedScriptStroke.Color = Color3.fromRGB(0,191,255)
-                LastSelectedScriptStroke.Thickness = 1
-            end
-            bStroke.Color, bStroke.Thickness = Color3.fromRGB(50,200,50), 2
-            LastSelectedScriptStroke = bStroke
+            -- Đã xoá phần đổi viền xanh lá ở đây
+            
+            -- Thêm tên script viết hoa vào thông báo
+            ShowToast("✅ script | " .. string.upper(name) .. " | đã được bật")
             
             MainFrame.Visible = false
             pcall(callback)
@@ -723,6 +746,7 @@ local function rebuildScriptDropdown()
             dropBtn.Text = " 📜 " .. scr.Name
             dropListFrame.Visible = false
             if State.IsAutoLoad then 
+                ShowToast("✅ script | " .. string.upper(scr.Name) .. " | đã được bật")
                 MainFrame.Visible = false
                 pcall(scr.Callback) 
             end
@@ -1104,7 +1128,6 @@ for i, cItem in ipairs(colorList) do
 
     Track(btn.MouseButton1Click:Connect(function()
         selectedColorObj = cItem
-        -- Cập nhật text chuẩn xác
         colorDropBtn.Text = " 🎨 Viền: " .. cItem.Name
         colorDropList.Visible = false
         if cItem.Color == "Rainbow" then
@@ -1560,4 +1583,4 @@ ApplyTheme(Color3.fromRGB(15, 16, 22))
 UpdateAllStrokes(Color3.fromRGB(0, 191, 255))
 RefreshStartupLabel()
 
-print("[VzNam Hub v4 : Tổng Hợp] ✅ Loaded (Bản tối ưu hóa, không lag).")
+print("[VzNam Hub v4 : Tổng Hợp] ✅ Loaded.")
