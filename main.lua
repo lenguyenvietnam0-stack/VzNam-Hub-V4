@@ -1,6 +1,6 @@
 --[[
     ═══════════════════════════════════════════════════════
-    VzNam Hub v4 : Tổng Hợp (Bản Fix Lỗi Crash & Vuốt + Nút Home Đỏ)
+    VzNam Hub v4 : Tổng Hợp (Bản Tối Ưu Hóa - Siêu Mượt)
     ═══════════════════════════════════════════════════════
 ]]
 
@@ -10,7 +10,7 @@ local UserInputService= game:GetService("UserInputService")
 local SoundService    = game:GetService("SoundService")
 local HttpService     = game:GetService("HttpService")
 local RunService      = game:GetService("RunService")
-local TweenService    = game:GetService("TweenService") -- Thêm TweenService
+local TweenService    = game:GetService("TweenService")
 
 local localPlayer = Players.LocalPlayer
 local PlayerGui = localPlayer:FindFirstChildOfClass("PlayerGui") or CoreGui
@@ -66,7 +66,7 @@ local function RegTheme(el, t)
     return el
 end
 
--- Hàm tạo nút bằng TextButton thuần (Hỗ trợ vuốt cực mượt, không bị bấm nhầm)
+-- Hàm tạo nút bằng TextButton thuần (Không còn cơ chế bảo vệ gây lag)
 local function CreateCustomButton(parent, text, themeType)
     local btn = Instance.new("TextButton", parent)
     btn.BackgroundColor3 = Color3.fromRGB(70,15,50)
@@ -78,35 +78,12 @@ local function CreateCustomButton(parent, text, themeType)
     btn.Font = Enum.Font.Gotham
     btn.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Fix lỗi crash: Dùng UIPadding thay vì thuộc tính không tồn tại
     local padding = Instance.new("UIPadding", btn)
     padding.PaddingLeft = UDim.new(0, 5)
 
     Corner(btn)
     local s = Stroke(btn, Color3.fromRGB(0,191,255), 1)
     RegTheme(btn, themeType)
-
-    -- Bảo vệ nút khỏi bị đổi tên
-    Track(btn:GetPropertyChangedSignal("Text"):Connect(function()
-        if btn.Text ~= text then
-            btn.Text = text
-        end
-    end))
-
-    -- Bảo vệ nút khỏi bị đổi màu
-    Track(btn:GetPropertyChangedSignal("BackgroundColor3"):Connect(function()
-        local base = State.ThemeBase
-        local targetBg
-        if themeType == "Primary" then targetBg = base:Lerp(Color3.new(1,1,1), 0.08)
-        elseif themeType == "Secondary" then targetBg = base:Lerp(Color3.new(1,1,1), 0.15)
-        elseif themeType == "DropFrame" then targetBg = base:Lerp(Color3.new(1,1,1), 0.2)
-        elseif themeType == "DropItem" then targetBg = base:Lerp(Color3.new(1,1,1), 0.3)
-        elseif themeType == "Input" then targetBg = base:Lerp(Color3.new(0,0,0), 0.4)
-        end
-        if targetBg and btn.BackgroundColor3 ~= targetBg then
-            btn.BackgroundColor3 = targetBg
-        end
-    end))
 
     return btn, s
 end
@@ -1127,6 +1104,7 @@ for i, cItem in ipairs(colorList) do
 
     Track(btn.MouseButton1Click:Connect(function()
         selectedColorObj = cItem
+        -- Cập nhật text chuẩn xác
         colorDropBtn.Text = " 🎨 Viền: " .. cItem.Name
         colorDropList.Visible = false
         if cItem.Color == "Rainbow" then
@@ -1492,10 +1470,6 @@ local function refreshAllDropdowns()
         Stroke(f1)
         RegTheme(f1, "DropItem")
 
-        Track(f1:GetPropertyChangedSignal("Text"):Connect(function()
-            if f1.Text ~= origT then f1.Text = origT end
-        end))
-
         Track(f1.MouseButton1Click:Connect(function()
             if typeof(delfile) == "function" then pcall(delfile, CONFIG_FOLDER .. "/" .. name .. ".json") end
             delBtn.Text = name .. " ∨"
@@ -1512,10 +1486,6 @@ local function refreshAllDropdowns()
         Corner(f3, UDim.new(0, 4))
         Stroke(f3)
         RegTheme(f3, "DropItem")
-
-        Track(f3:GetPropertyChangedSignal("Text"):Connect(function()
-            if f3.Text ~= origT2 then f3.Text = origT2 end
-        end))
 
         Track(f3.MouseButton1Click:Connect(function()
             State.CurrentConfig = name
@@ -1571,10 +1541,8 @@ OpenButton.Text, OpenButton.TextSize = "🌸", 22
 OpenButton.Active, OpenButton.Draggable = true, true
 Corner(OpenButton, UDim.new(1, 0))
 
--- Tạo viền đỏ đập nhịp
 local OpenStroke = Instance.new("UIStroke", OpenButton)
 OpenStroke.Thickness, OpenStroke.Color = 2, Color3.fromRGB(255, 50, 50)
--- Không đưa vào AllUIStrokes để khi đổi theme nút Home vẫn giữ hiệu ứng đỏ
 
 local pulseTween = TweenService:Create(
     OpenStroke, 
@@ -1592,4 +1560,4 @@ ApplyTheme(Color3.fromRGB(15, 16, 22))
 UpdateAllStrokes(Color3.fromRGB(0, 191, 255))
 RefreshStartupLabel()
 
-print("[VzNam Hub v4 : Tổng Hợp] ✅ Loaded (Nút Home có hiệu ứng đỏ).")
+print("[VzNam Hub v4 : Tổng Hợp] ✅ Loaded (Bản tối ưu hóa, không lag).")
